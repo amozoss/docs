@@ -13,6 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Checkout DCS Docs
+        uses: actions/checkout@v2
+        with:
+          ref: gitbook-sync
+          path: gitbook/dcs
+
+      - name: Checkout Node Docs
+        uses: actions/checkout@v2
+        with:
+          ref: gitbook-node-sync
+          path: gitbook/node
+
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
@@ -25,7 +37,7 @@ jobs:
           extended: true
 
       - name: Convert Pages
-        run: go run .
+        run: go run . -skip-worktree
 
       - name: Run Hugo
         run: make

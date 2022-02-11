@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/fs"
 	"os"
@@ -58,11 +59,15 @@ func mustRun(exe string, args ...string) {
 }
 
 func main() {
-	// reset gitbook
-	run("git", "worktree", "remove", "gitbook/dcs")
-	mustRun("git", "worktree", "add", "gitbook/dcs", "origin/gitbook-sync")
-	run("git", "worktree", "remove", "gitbook/node")
-	mustRun("git", "worktree", "add", "gitbook/node", "origin/gitbook-node-sync")
+	skipWorktree := flag.Bool("skip-worktree", false, "skips worktree logic")
+
+	if *skipWorktree {
+		// reset gitbook
+		run("git", "worktree", "remove", "gitbook/dcs")
+		mustRun("git", "worktree", "add", "gitbook/dcs", "origin/gitbook-sync")
+		run("git", "worktree", "remove", "gitbook/node")
+		mustRun("git", "worktree", "add", "gitbook/node", "origin/gitbook-node-sync")
+	}
 
 	// cleanup previous run
 	os.RemoveAll("content")
