@@ -17,7 +17,6 @@ import (
 fix external links
 fix external images
 fix `{% `stuff
-fix menu order
 
 */
 
@@ -98,10 +97,18 @@ type Convert struct {
 	ContentDir string
 	TargetDir  string
 
+	OrderByFolder map[string][]SummaryItem
+
 	Failures []error
 }
 
+type SummaryItem struct {
+	Title       string
+	ContentPath string
+}
+
 func (conv *Convert) Run() {
+	conv.CreateOrder()
 	conv.Files()
 	conv.AddSectionIndices()
 }
@@ -168,7 +175,8 @@ func (conv *Convert) Convert(fullPath string) error {
 		return fmt.Errorf("failed to load: %w", err)
 	}
 
-	page := ParsePage(string(data))
+	page := ParsePage(contentPath, string(data))
+	conv.AddWeight(&page)
 	conv.LiftTitle(&page)
 	conv.ReplaceTags(&page)
 	conv.FixTrailingSpace(&page)
@@ -207,17 +215,22 @@ func ensureFileDir(path string) error {
 }
 
 type Page struct {
+	ContentPath string
 	FrontMatter string
 	Content     string
 }
 
-func ParsePage(content string) Page {
+func ParsePage(contentPath, content string) Page {
 	tokens := strings.Split(content, "---\n")
 	if len(tokens) == 1 {
-		return Page{Content: content}
+		return Page{
+			ContentPath: contentPath,
+			Content:     content,
+		}
 	}
 
 	return Page{
+		ContentPath: contentPath,
 		FrontMatter: tokens[1],
 		Content:     tokens[2],
 	}
@@ -231,13 +244,61 @@ func (page *Page) WriteToFile(path string) error {
 	}, "---\n")))
 }
 
+func (conv *Convert) CreateOrder() {
+	conv.OrderByFolder = map[string][]SummaryItem{}
+
+	data, err := os.ReadFile(path.Join(conv.SourceDir, "SUMMARY.md"))
+	if err != nil {
+		conv.Failures = append(conv.Failures, fmt.Errorf("failed to read summary: %w", err))
+		return
+	}
+
+	rx := mustCompile(`\[([^\]]*)\]\(([^)]*)\)`)
+	for _, match := range rx.FindAllStringSubmatch(string(data), -1) {
+		title := match[1]
+		contentPath := match[2]
+
+		dir := path.Dir(contentPath)
+		if filepath.Base(contentPath) == "README.md" {
+			dir = path.Dir(dir)
+		}
+
+		conv.OrderByFolder[dir] = append(conv.OrderByFolder[dir],
+			SummaryItem{
+				Title:       title,
+				ContentPath: contentPath,
+			})
+	}
+	fmt.Println(conv.OrderByFolder)
+}
+
+func (conv *Convert) AddWeight(page *Page) {
+	if page.ContentPath == "SUMMARY.md" {
+		page.FrontMatter = "hidden: true\n" + page.FrontMatter
+		return
+	}
+
+	dir := path.Dir(page.ContentPath)
+	if filepath.Base(page.ContentPath) == "README.md" {
+		dir = path.Dir(dir)
+	}
+
+	for i, item := range conv.OrderByFolder[dir] {
+		if item.ContentPath == page.ContentPath {
+			page.FrontMatter = "weight: " + strconv.Itoa(-100+i*10) + "\n" + page.FrontMatter
+			return
+		}
+	}
+	conv.Failures = append(conv.Failures, fmt.Errorf("order missing for %s", page.ContentPath))
+}
+
 // LiftTitle moves `# XYZ` to front matter `title: `
 func (conv *Convert) LiftTitle(page *Page) {
 	if match(`title\s*:`, page.FrontMatter) {
 		return
 	}
 
-	const rxTitle = `#\s*([A-Za-z0-9\- :]+)\n`
+	const rxTitle = `#\s*([^\n]+)\n`
 
 	var title string
 	ok := match(rxTitle, page.Content, nil, &title)
