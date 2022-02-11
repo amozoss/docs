@@ -1,0 +1,36 @@
+.markdown {
+  // {{< embed >}}
+  a.embed {
+    display: block;
+    font-size: $font-size-14;
+    color: var(--color-link);
+    line-height: $padding-16 * 2;
+    padding: 0 $padding-16;
+    border: $padding-1 solid var(--color-link);
+    border-radius: $border-radius;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+
+/* Adjust heading weight */
+
+.markdown {
+	h1, h2, h3 {
+		font-weight: 600;
+		line-height: 1.25em;
+	}
+	h1 {
+		font-size: 2.5em
+	}
+	h2 {
+		font-size: 2em;
+	}
+	h3 {
+		font-size: 1.5em;
+	}
+}

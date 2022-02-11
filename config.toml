@@ -1,0 +1,61 @@
+baseURL = 'https://docs.storj.io/dcs'
+title = 'Storj DCS'
+theme = 'hugo-book'
+contentDir = 'content/dcs'
+
+# Book configuration
+disablePathToLower = false
+enableGitInfo = false
+
+# Needed for mermaid/katex shortcodes
+[markup]
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.tableOfContents]
+  startLevel = 2
+
+[menu]
+# [[menu.before]]
+#[[menu.after]]
+#  name = "Node"
+#  url = "https://github.com/alex-shpak/hugo-book"
+#  weight = 10
+
+[params]
+  BookTheme = 'auto'
+  BookToC = true
+
+  # (Optional, default none) Set the path to a logo for the book. If the logo is
+  # /static/logo.png then the path would be logo.png
+  # BookLogo = 'logo.png'
+
+  # (Optional, default none) Set leaf bundle to render as side menu
+  # When not specified file structure and weights will be used
+  # BookMenuBundle = '/menu'
+
+  # (Optional, default docs) Specify root page to render child pages as menu.
+  # Page is resolved by .GetPage function: https://gohugo.io/functions/getpage/
+  BookSection = '/'
+
+  # Set source repository location.
+  # Used for 'Last Modified' and 'Edit this page' links.
+  BookRepo = 'https://github.com/storj/docs'
+
+  # (Optional, default 'commit') Specifies commit portion of the link to the page's last modified
+  # commit hash for 'doc' page type.
+  # Requires 'BookRepo' param.
+  # Value used to construct a URL consisting of BookRepo/BookCommitPath/<commit-hash>
+  # Github uses 'commit', Bitbucket uses 'commits'
+  BookCommitPath = 'commit'
+
+  # Enable "Edit this page" links for 'doc' page type.
+  # Disabled by default. Uncomment to enable. Requires 'BookRepo' param.
+  # Edit path must point to root directory of repo.
+  BookEditPath = 'edit/main/content/dcs'
+
+  BookDateFormat = 'January 2, 2006'
+  BookSearch = true
+  BookComments = true
+  BookPortableLinks = true
+  BookServiceWorker = true
