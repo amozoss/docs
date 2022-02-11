@@ -53,7 +53,7 @@ enableGitInfo = false
 
   BookDateFormat = 'January 2, 2006'
   BookSearch = true
-  BookComments = true
+  # BookComments = false
   BookPortableLinks = true
   BookServiceWorker = true
 
