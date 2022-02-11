@@ -20,23 +20,35 @@
 /* Adjust heading weight */
 
 .markdown {
-	h1, h2, h3 {
-		font-weight: 600;
-		line-height: 1.25em;
-	}
-	h1 {
-		font-size: 2.5em
-	}
-	h2 {
-		font-size: 2em;
-	}
-	h3 {
-		font-size: 1.5em;
-	}
+  h1, h2, h3 {
+    font-weight: 600;
+    line-height: 1.25em;
+  }
+  h1 {
+    font-size: 2.5em
+  }
+  h2 {
+    font-size: 2em;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
 }
 
 /* Adjust book branding */
 
 .book-brand {
-	font-weight: 600;
+  font-weight: 600;
+}
+
+/* adjust tabs border */
+.markdown .book-tabs {
+  border-color: var(--gray-500);
+
+  label {
+    border-bottom: 2px transparent;
+  }
+  input[type="radio"]:checked + label {
+    border-bottom: 2px solid var(--color-link);
+  }
 }
