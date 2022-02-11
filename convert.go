@@ -130,9 +130,16 @@ func (conv *Convert) Run() {
 func (conv *Convert) Files() {
 	err := filepath.WalkDir(conv.SourceDir,
 		func(path string, d fs.DirEntry, err error) error {
-			if err != nil || d.IsDir() || filepath.Base(path) == ".git" {
+			if err != nil {
 				return err
 			}
+			if filepath.Base(path) == ".git" {
+				return filepath.SkipDir
+			}
+			if d.IsDir() {
+				return nil
+			}
+
 			if err := conv.Convert(filepath.ToSlash(path)); err != nil {
 				conv.Failures = append(conv.Failures,
 					fmt.Errorf("failed to convert %s: %w", path, err))
@@ -148,9 +155,16 @@ func (conv *Convert) CopyExtra() {
 	sourceDir := path.Join(conv.ExtraDir, conv.TargetDir)
 	err := filepath.WalkDir(sourceDir,
 		func(p string, d fs.DirEntry, err error) error {
-			if err != nil || d.IsDir() || filepath.Base(p) == ".git" {
+			if err != nil {
 				return err
 			}
+			if filepath.Base(p) == ".git" {
+				return filepath.SkipDir
+			}
+			if d.IsDir() {
+				return nil
+			}
+
 			fullPath := filepath.ToSlash(p)
 			fmt.Println("  - ", fullPath)
 			contentPath := trimPrefix(fullPath, sourceDir)
