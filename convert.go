@@ -8,6 +8,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -20,6 +21,27 @@ fix menu collapsing
 fix menu order
 
 */
+
+const assetsDir = "_assets"
+
+var menuMapping = map[string]topLevelMenu{
+	"dcs/storage": {"Decentralized Cloud Storage", 10},
+	"dcs/downloads": {"Downloads", 20},
+	"dcs/getting-started": {"Getting Started", 30},
+	"dcs/api-reference": {"SDK & Reference", 40},
+	"dcs/how-tos": {"How To's", 50},
+	"dcs/solution-architectures": {"Solution Architectures", 60},
+	"dcs/concepts": {"Concepts", 70},
+	"dcs/support": {"Support", 80},
+	"dcs/billing-payment-and-accounts-1": {"Billing, Payment & Accounts", 90},
+
+	"node/before-you-begin": {"Before You Begin", 10},
+	"node/dependencies": {"Dependencies", 20},
+	"node/setup": {"Setup", 30},
+	"node/sno-applications": {"SNO Applications", 40},
+	"node/resources": {"Resources", 50},
+	"node/solution-architectures": {"Solution Architectures", 60},
+}
 
 func main() {
 	// reset gitbook
@@ -71,6 +93,7 @@ type Convert struct {
 
 func (conv *Convert) Run() {
 	conv.Files()
+	conv.AddSectionIndices()
 }
 
 func (conv *Convert) Files() {
@@ -106,7 +129,7 @@ func (conv *Convert) Convert(fullPath string) error {
 			return fmt.Errorf("don't know where to move")
 		}
 		noPrefix := trimPrefix(contentPath, ".gitbook/assets")
-		targetPath := path.Join(conv.ContentDir, conv.TargetDir, "_assets", noPrefix)
+		targetPath := path.Join(conv.ContentDir, conv.TargetDir, assetsDir, noPrefix)
 		err := copyFile(fullPath, targetPath)
 		if err != nil {
 			return fmt.Errorf("failed to copy: %w", err)
@@ -144,6 +167,10 @@ func copyFile(from, to string) error {
 	if err != nil {
 		return err
 	}
+	return writeFile(to, data)
+}
+
+func writeFile(to string, data []byte) error {
 	if err := ensureFileDir(to); err != nil {
 		return err
 	}
@@ -176,15 +203,11 @@ func ParsePage(content string) Page {
 }
 
 func (page *Page) WriteToFile(path string) error {
-	content := strings.Join([]string{
+	return writeFile(path, []byte(strings.Join([]string{
 		"",
 		page.FrontMatter,
 		page.Content,
-	}, "---\n")
-	if err := ensureFileDir(path); err != nil {
-		return err
-	}
-	return os.WriteFile(path, []byte(content), 0644)
+	}, "---\n")))
 }
 
 // LiftTitle moves `# XYZ` to front matter `title: `
@@ -286,13 +309,47 @@ func (conv *Convert) FixImageLinks(page *Page) {
 
 		p := strings.Index(url, ".gitbook/assets")
 		if p >= 0 {
-			url = "/" + conv.TargetDir + "/_assets" + url[p+8+7:]
+			url = "/" + conv.TargetDir + "/" + assetsDir + url[p+8+7:]
 		}
 		if hasAngle {
 			url = "<" + url
 		}
 		return "![" + title + "](" + url + ")"
 	})
+}
+
+func (conv *Convert) AddSectionIndices() {
+	entries, err := os.ReadDir(filepath.Join(conv.ContentDir, conv.TargetDir))
+	if err != nil {
+		conv.Failures = append(conv.Failures, err)
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		if entry.Name() == assetsDir {
+			continue
+		}
+
+		dir :=path.Join(conv.TargetDir, entry.Name())
+		info, ok := menuMapping[dir]
+		if !ok {
+			conv.Failures = append(conv.Failures, fmt.Errorf("menu mapping missing for %s", dir))
+		}
+
+		content := "---\n"
+		if info.title != "" {
+			content += "title: \"" + info.title +"\"\n"
+			content += "weight: " + strconv.Itoa(info.weight) + "\n"
+		}
+		content += "bookFlatSection: true\n"
+		content += "---\n"
+
+		if err := writeFile(path.Join(conv.ContentDir, dir, "_index.md"), []byte(content)); err != nil {
+			conv.Failures = append(conv.Failures, fmt.Errorf("menu failed for %s", dir))
+		}
+	}
 }
 
 var rxCache = map[string]*regexp.Regexp{}
@@ -350,5 +407,3 @@ type topLevelMenu struct {
 	title  string
 	weight int
 }
-
-var menuMapping = map[string]topLevelMenu{}

@@ -15,12 +15,19 @@ enableGitInfo = false
 [markup.tableOfContents]
   startLevel = 2
 
-[menu]
-# [[menu.before]]
-#[[menu.after]]
-#  name = "Node"
-#  url = "https://github.com/alex-shpak/hugo-book"
-#  weight = 10
+# [menu]
+#  [[menu.before]]
+#    name = "Introduction"
+#    url = "/"
+#    weight = -10
+#  [[menu.before]]
+#    name = "Node Docs"
+#    url = "https://docs.storj.io/node"
+#    weight = -5
+# [[menu.after]]
+#   name = "Whitepaper"
+#   url = "https://www.storj.io/storjv3.pdf"
+#   weight = 20
 
 [params]
   BookTheme = 'auto'
