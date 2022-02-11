@@ -274,7 +274,7 @@ func (conv *Convert) CreateOrder() {
 
 func (conv *Convert) AddWeight(page *Page) {
 	if page.ContentPath == "SUMMARY.md" {
-		page.FrontMatter = "hidden: true\n" + page.FrontMatter
+		page.FrontMatter = "draft: true\n" + page.FrontMatter
 		return
 	}
 
