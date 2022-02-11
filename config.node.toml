@@ -1,4 +1,5 @@
-baseURL = 'https://docs.storj.io/node'
+baseURL = 'https://storj.github.io/docs/node'
+# baseURL = 'https://docs.storj.io/node'
 title = 'Node Docs'
 contentDir = 'content/node'
 publishDir = 'public/node'
@@ -6,7 +7,8 @@ publishDir = 'public/node'
 [menu]
   [[menu.before]]
     name = "All Docs"
-    url = "https://docs.storj.io/dcs"
+    # url = "https://docs.storj.io/dcs"
+    url = 'https://storj.github.io/docs/dcs'
     weight = -980
   [[menu.before]]
     name = "Signup for Auth Token"

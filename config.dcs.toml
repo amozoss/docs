@@ -1,4 +1,5 @@
-baseURL = 'https://docs.storj.io/dcs'
+# baseURL = 'https://docs.storj.io/dcs'
+baseURL = 'https://storj.github.io/docs/dcs'
 title = 'Storj DCS'
 contentDir = 'content/dcs'
 publishDir = 'public/dcs'
@@ -6,7 +7,8 @@ publishDir = 'public/dcs'
 [menu]
   [[menu.before]]
     name = "Node Docs"
-    url = "https://docs.storj.io/node"
+    # url = "https://docs.storj.io/node"
+    url = 'https://storj.github.io/docs/node'
     weight = -980
 
 [params]
