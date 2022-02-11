@@ -1,0 +1,17 @@
+baseURL = 'https://docs.storj.io/node'
+title = 'Node Docs'
+contentDir = 'content/node'
+
+[menu]
+  [[menu.before]]
+    name = "All Docs"
+    url = "https://docs.storj.io/dcs"
+    weight = -980
+  [[menu.before]]
+    name = "Signup for Auth Token"
+    url = "https://registration.storj.io"
+    weight = -970
+
+[params]
+  BookRepo = 'https://github.com/storj/node'
+  BookEditPath = 'edit/main/content/node'

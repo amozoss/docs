@@ -1,0 +1,13 @@
+baseURL = 'https://docs.storj.io/dcs'
+title = 'Storj DCS'
+contentDir = 'content/dcs'
+
+[menu]
+  [[menu.before]]
+    name = "Node Docs"
+    url = "https://docs.storj.io/node"
+    weight = -980
+
+[params]
+  BookRepo = 'https://github.com/storj/docs'
+  BookEditPath = 'edit/main/content/dcs'

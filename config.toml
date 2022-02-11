@@ -1,7 +1,7 @@
 baseURL = 'https://docs.storj.io/dcs'
-title = 'Storj DCS'
+title = 'Storj Documentation'
 theme = 'github.com/alex-shpak/hugo-book'
-contentDir = 'content/dcs'
+contentDir = 'content'
 
 # Book configuration
 disablePathToLower = false
@@ -14,20 +14,6 @@ enableGitInfo = false
 
 [markup.tableOfContents]
   startLevel = 2
-
-# [menu]
-#  [[menu.before]]
-#    name = "Introduction"
-#    url = "/"
-#    weight = -10
-#  [[menu.before]]
-#    name = "Node Docs"
-#    url = "https://docs.storj.io/node"
-#    weight = -5
-# [[menu.after]]
-#   name = "Whitepaper"
-#   url = "https://www.storj.io/storjv3.pdf"
-#   weight = 20
 
 [params]
   BookTheme = 'auto'
@@ -51,7 +37,7 @@ enableGitInfo = false
 
   # Set source repository location.
   # Used for 'Last Modified' and 'Edit this page' links.
-  BookRepo = 'https://github.com/storj/docs'
+  # BookRepo = 'https://github.com/storj/docs'
 
   # (Optional, default 'commit') Specifies commit portion of the link to the page's last modified
   # commit hash for 'doc' page type.
@@ -63,7 +49,7 @@ enableGitInfo = false
   # Enable "Edit this page" links for 'doc' page type.
   # Disabled by default. Uncomment to enable. Requires 'BookRepo' param.
   # Edit path must point to root directory of repo.
-  BookEditPath = 'edit/main/content/dcs'
+  # BookEditPath = 'edit/main/content/dcs'
 
   BookDateFormat = 'January 2, 2006'
   BookSearch = true

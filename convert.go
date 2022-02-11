@@ -69,11 +69,13 @@ func main() {
 		{
 			SourceDir:  "gitbook/dcs/docs",
 			ContentDir: "content",
+			ExtraDir:   "content-extra",
 			TargetDir:  "dcs",
 		},
 		{
 			SourceDir:  "gitbook/node",
 			ContentDir: "content",
+			ExtraDir:   "content-extra",
 			TargetDir:  "node",
 		},
 	}
@@ -95,6 +97,7 @@ func main() {
 type Convert struct {
 	SourceDir  string
 	ContentDir string
+	ExtraDir   string
 	TargetDir  string
 
 	OrderByFolder map[string][]SummaryItem
@@ -111,23 +114,41 @@ func (conv *Convert) Run() {
 	conv.CreateOrder()
 	conv.Files()
 	conv.AddSectionIndices()
+	conv.CopyExtra()
 }
 
 func (conv *Convert) Files() {
 	err := filepath.WalkDir(conv.SourceDir,
 		func(path string, d fs.DirEntry, err error) error {
-			if err != nil {
+			if err != nil || d.IsDir() || filepath.Base(path) == ".git" {
 				return err
-			}
-			if d.IsDir() {
-				return nil
-			}
-			if filepath.Base(path) == ".git" {
-				return nil
 			}
 			if err := conv.Convert(filepath.ToSlash(path)); err != nil {
 				conv.Failures = append(conv.Failures,
 					fmt.Errorf("failed to convert %s: %w", path, err))
+			}
+			return nil
+		})
+	if err != nil {
+		conv.Failures = append(conv.Failures, err)
+	}
+}
+
+func (conv *Convert) CopyExtra() {
+	sourceDir := path.Join(conv.ExtraDir, conv.TargetDir)
+	err := filepath.WalkDir(sourceDir,
+		func(p string, d fs.DirEntry, err error) error {
+			if err != nil || d.IsDir() || filepath.Base(p) == ".git" {
+				return err
+			}
+			fullPath := filepath.ToSlash(p)
+			fmt.Println("  - ", fullPath)
+			contentPath := trimPrefix(fullPath, sourceDir)
+
+			targetPath := path.Join(conv.ContentDir, conv.TargetDir, contentPath)
+			err = copyFile(fullPath, targetPath)
+			if err != nil {
+				conv.Failures = append(conv.Failures, fmt.Errorf("failed to copy %q: %w", fullPath, err))
 			}
 			return nil
 		})
@@ -348,7 +369,7 @@ func (conv *Convert) ReplaceTags(page *Page) {
 			if match(`^url="(.*)"$`, strings.TrimSpace(tok[2]), nil, &url) {
 				// TODO: fetch link title
 				// TODO: replace with youtube link
-				return `{{< embed href="` + strings.TrimSpace(url) + `" >}}` + url + `{{< /biglink >}}`
+				return `{{< biglink href="` + strings.TrimSpace(url) + `" >}}` + url + `{{< /biglink >}}`
 			}
 		case "endembed":
 			// TODO: needs special case

@@ -38,8 +38,8 @@
     </label>
   {{ else if .Page.Params.link }}
     <a href="{{ .Page.Params.link }}" class="book-external-link {{ if $current }} active{{ end }}" target="_blank" rel="noopener">
-      <img src="{{ "svg/external-link.svg" | relURL }}" class="book-icon" alt="External Link">
       {{- partial "docs/title" .Page -}}
+      <img src="{{ "svg/external-link.svg" | relURL }}" class="book-icon" alt="External Link">
     </a>
   {{ else if .Page.Content }}
     <a href="{{ .Page.Permalink }}" class="{{ if $current }} active{{ end }}" >
