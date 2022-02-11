@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -21,10 +22,17 @@ fix menu order
 */
 
 func main() {
+	// reset gitbook
+	exec.Command("git", "worktree", "remove", "gitbook/dcs").Run()
+	exec.Command("git", "worktree", "add", "gitbook/dcs", "origin/gitbook-sync").Run()
+	exec.Command("git", "worktree", "remove", "gitbook/node").Run()
+	exec.Command("git", "worktree", "add", "gitbook/node", "origin/gitbook-node-sync").Run()
+
 	// cleanup previous run
 	os.RemoveAll("content")
-	os.Mkdir("content", 0644)
+	os.Mkdir("content", 0755)
 
+	// start conversion
 	failures := []error{}
 	convs := []Convert{
 		{
@@ -49,6 +57,7 @@ func main() {
 		for _, fail := range failures {
 			fmt.Println(fail)
 		}
+		os.Exit(1)
 	}
 }
 
@@ -146,7 +155,7 @@ func trimPrefix(path, prefix string) string {
 }
 
 func ensureFileDir(path string) error {
-	return os.MkdirAll(filepath.Dir(path), 0644)
+	return os.MkdirAll(filepath.Dir(path), 0755)
 }
 
 type Page struct {
