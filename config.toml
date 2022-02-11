@@ -2,6 +2,7 @@ baseURL = 'https://docs.storj.io/dcs'
 title = 'Storj Documentation'
 theme = 'github.com/alex-shpak/hugo-book'
 contentDir = 'content'
+staticDir = 'static'
 
 # Book configuration
 disablePathToLower = false

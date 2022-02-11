@@ -445,7 +445,13 @@ func (conv *Convert) FixImageLinks(page *Page) {
 			if noPrefix == "/0" || noPrefix == "/1" || noPrefix == "/2" || noPrefix == "/3" {
 				noPrefix += "-fix.png"
 			}
-			url = "/" + conv.TargetDir + "/" + assetsDir + noPrefix
+			abs := assetsDir + noPrefix
+			// suuper hacky code to calculate relative path
+			n := strings.Count(page.ContentPath, "/")
+			if filepath.Base(page.ContentPath) != "README.md" {
+				n++
+			}
+			url = strings.Repeat("../", n) + abs
 		}
 		if hasAngle {
 			url = "<" + url
