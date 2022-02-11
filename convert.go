@@ -42,12 +42,17 @@ var menuMapping = map[string]topLevelMenu{
 }
 
 func run(cmd string, args ...string) {
-	_ = exec.Command(cmd, args...).Run()
+	cmd := exec.Command(cmd, args...)
+	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	_ = cmd.Run()
 }
 
 func mustRun(cmd string, args ...string) {
-	err := exec.Command(cmd, args...).Run()
+	cmd := exec.Command(cmd, args...)
+	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	err := cmd.Run()
 	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
