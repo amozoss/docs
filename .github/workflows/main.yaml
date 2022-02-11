@@ -13,11 +13,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Setup Go
+        uses: actions/setup-go@v2
+
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
           extended: true
+
+      - name: Convert Pages
+        run: go run .
 
       - name: Run Hugo
         run: make
