@@ -41,14 +41,14 @@ var menuMapping = map[string]topLevelMenu{
 	"node/solution-architectures": {"Solution Architectures", 60},
 }
 
-func run(cmd string, args ...string) {
-	cmd := exec.Command(cmd, args...)
+func run(exe string, args ...string) {
+	cmd := exec.Command(exe, args...)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	_ = cmd.Run()
 }
 
-func mustRun(cmd string, args ...string) {
-	cmd := exec.Command(cmd, args...)
+func mustRun(exe string, args ...string) {
+	cmd := exec.Command(exe, args...)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	err := cmd.Run()
 	if err != nil {
