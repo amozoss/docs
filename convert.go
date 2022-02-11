@@ -25,30 +25,41 @@ fix menu order
 const assetsDir = "_assets"
 
 var menuMapping = map[string]topLevelMenu{
-	"dcs/storage": {"Decentralized Cloud Storage", 10},
-	"dcs/downloads": {"Downloads", 20},
-	"dcs/getting-started": {"Getting Started", 30},
-	"dcs/api-reference": {"SDK & Reference", 40},
-	"dcs/how-tos": {"How To's", 50},
-	"dcs/solution-architectures": {"Solution Architectures", 60},
-	"dcs/concepts": {"Concepts", 70},
-	"dcs/support": {"Support", 80},
+	"dcs/storage":                        {"Decentralized Cloud Storage", 10},
+	"dcs/downloads":                      {"Downloads", 20},
+	"dcs/getting-started":                {"Getting Started", 30},
+	"dcs/api-reference":                  {"SDK & Reference", 40},
+	"dcs/how-tos":                        {"How To's", 50},
+	"dcs/solution-architectures":         {"Solution Architectures", 60},
+	"dcs/concepts":                       {"Concepts", 70},
+	"dcs/support":                        {"Support", 80},
 	"dcs/billing-payment-and-accounts-1": {"Billing, Payment & Accounts", 90},
 
-	"node/before-you-begin": {"Before You Begin", 10},
-	"node/dependencies": {"Dependencies", 20},
-	"node/setup": {"Setup", 30},
-	"node/sno-applications": {"SNO Applications", 40},
-	"node/resources": {"Resources", 50},
+	"node/before-you-begin":       {"Before You Begin", 10},
+	"node/dependencies":           {"Dependencies", 20},
+	"node/setup":                  {"Setup", 30},
+	"node/sno-applications":       {"SNO Applications", 40},
+	"node/resources":              {"Resources", 50},
 	"node/solution-architectures": {"Solution Architectures", 60},
+}
+
+func run(cmd string, args ...string) {
+	_ = exec.Command(cmd, args...).Run()
+}
+
+func mustRun(cmd string, args ...string) {
+	err := exec.Command(cmd, args...).Run()
+	if err != nil {
+		os.Exit(1)
+	}
 }
 
 func main() {
 	// reset gitbook
-	exec.Command("git", "worktree", "remove", "gitbook/dcs").Run()
-	exec.Command("git", "worktree", "add", "gitbook/dcs", "origin/gitbook-sync").Run()
-	exec.Command("git", "worktree", "remove", "gitbook/node").Run()
-	exec.Command("git", "worktree", "add", "gitbook/node", "origin/gitbook-node-sync").Run()
+	run("git", "worktree", "remove", "gitbook/dcs")
+	mustRun("git", "worktree", "add", "gitbook/dcs", "origin/gitbook-sync")
+	run("git", "worktree", "remove", "gitbook/node")
+	mustRun("git", "worktree", "add", "gitbook/node", "origin/gitbook-node-sync")
 
 	// cleanup previous run
 	os.RemoveAll("content")
@@ -332,7 +343,7 @@ func (conv *Convert) AddSectionIndices() {
 			continue
 		}
 
-		dir :=path.Join(conv.TargetDir, entry.Name())
+		dir := path.Join(conv.TargetDir, entry.Name())
 		info, ok := menuMapping[dir]
 		if !ok {
 			conv.Failures = append(conv.Failures, fmt.Errorf("menu mapping missing for %s", dir))
@@ -340,7 +351,7 @@ func (conv *Convert) AddSectionIndices() {
 
 		content := "---\n"
 		if info.title != "" {
-			content += "title: \"" + info.title +"\"\n"
+			content += "title: \"" + info.title + "\"\n"
 			content += "weight: " + strconv.Itoa(info.weight) + "\n"
 		}
 		content += "bookFlatSection: true\n"
