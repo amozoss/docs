@@ -134,7 +134,10 @@ func (conv *Convert) Files() {
 				return err
 			}
 			if filepath.Base(path) == ".git" {
-				return filepath.SkipDir
+				if d.IsDir() {
+					return filepath.SkipDir
+				}
+				return nil
 			}
 			if d.IsDir() {
 				return nil
