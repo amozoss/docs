@@ -1,6 +1,7 @@
 baseURL = 'https://docs.storj.io/dcs'
 title = 'Storj DCS'
 contentDir = 'content/dcs'
+publishDir = 'public/dcs'
 
 [menu]
   [[menu.before]]
