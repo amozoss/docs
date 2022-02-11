@@ -16,7 +16,6 @@
   }
 }
 
-
 /* Adjust heading weight */
 
 .markdown {
@@ -51,4 +50,16 @@
   input[type="radio"]:checked + label {
     border-bottom: 2px solid var(--color-link);
   }
+}
+
+.toc-title {
+  font-weight: 600;
+  margin-bottom: 1em;
+  text-transform: uppercase;
+  color: var(--gray-500);
+}
+
+.book-hint.success {
+  border-inline-start-color: rgb(149, 200, 91);
+  background-color: rgba(149, 200, 91, 0.1);
 }

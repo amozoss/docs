@@ -277,7 +277,6 @@ func (conv *Convert) ReplaceTags(page *Page) {
 			case `style="danger"`:
 				return `{{< hint danger >}}`
 			case `style="success"`:
-				// TODO: add colors for it
 				return `{{< hint success >}}`
 			}
 		case "endhint":
