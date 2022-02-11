@@ -253,12 +253,15 @@ func (conv *Convert) LiftTitle(page *Page) {
 
 // ReplaceTags implements replacing tags of `{% *** %}`
 func (conv *Convert) ReplaceTags(page *Page) {
+	tabIndex := 0
+
 	rxTag := mustCompile(`{%\s*([a-zA-Z0-9-]+)\s(.*)\s*%}`)
 	page.Content = rxTag.ReplaceAllStringFunc(page.Content, func(tag string) string {
 		tok := rxTag.FindStringSubmatch(tag)
 		switch tok[1] {
 		case "tabs":
-			return `{{< tabs >}}`
+			tabIndex++
+			return fmt.Sprintf(`{{< tabs id%d >}}`, tabIndex)
 		case "endtabs":
 			return `{{< /tabs >}}`
 		case "tab":
