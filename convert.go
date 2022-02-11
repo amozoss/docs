@@ -149,7 +149,18 @@ func (conv *Convert) Convert(fullPath string) error {
 
 	case ".md":
 	default:
-		return fmt.Errorf("don't know how to handle %q", path.Ext(contentPath))
+		switch contentPath {
+		case ".gitbook/assets/0", ".gitbook/assets/1", ".gitbook/assets/2", ".gitbook/assets/3":
+			noPrefix := contentPath[len(contentPath)-1:] + "-fix.png"
+			targetPath := path.Join(conv.ContentDir, conv.TargetDir, assetsDir, noPrefix)
+			err := copyFile(fullPath, targetPath)
+			if err != nil {
+				return fmt.Errorf("failed to copy: %w", err)
+			}
+			return nil
+		}
+
+		return fmt.Errorf("don't know how to handle %q", contentPath)
 	}
 
 	// markdown handling
@@ -320,7 +331,12 @@ func (conv *Convert) FixImageLinks(page *Page) {
 
 		p := strings.Index(url, ".gitbook/assets")
 		if p >= 0 {
-			url = "/" + conv.TargetDir + "/" + assetsDir + url[p+8+7:]
+			noPrefix := url[p+8+7:]
+			// special case fix for images that are missing file extension
+			if noPrefix == "/0" || noPrefix == "/1" || noPrefix == "/2" || noPrefix == "/3" {
+				noPrefix += "-fix.png"
+			}
+			url = "/" + conv.TargetDir + "/" + assetsDir + noPrefix
 		}
 		if hasAngle {
 			url = "<" + url
