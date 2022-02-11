@@ -1,6 +1,6 @@
 baseURL = 'https://docs.storj.io/dcs'
 title = 'Storj DCS'
-theme = 'hugo-book'
+theme = 'github.com/alex-shpak/hugo-book'
 contentDir = 'content/dcs'
 
 # Book configuration
@@ -59,3 +59,7 @@ enableGitInfo = false
   BookComments = true
   BookPortableLinks = true
   BookServiceWorker = true
+
+[module]
+  [[module.imports]]
+    path = 'github.com/alex-shpak/hugo-book'
