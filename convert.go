@@ -269,7 +269,6 @@ func (conv *Convert) CreateOrder() {
 				ContentPath: contentPath,
 			})
 	}
-	fmt.Println(conv.OrderByFolder)
 }
 
 func (conv *Convert) AddWeight(page *Page) {
