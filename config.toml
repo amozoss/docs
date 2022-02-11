@@ -45,6 +45,10 @@ enableGitInfo = false
   # Page is resolved by .GetPage function: https://gohugo.io/functions/getpage/
   BookSection = '/'
 
+  # (Optional, default docs) Specify root page to render child pages as menu.
+  # Page is resolved by .GetPage function: https://gohugo.io/functions/getpage/
+  BookAutoCollapseAfterLevel = 1
+
   # Set source repository location.
   # Used for 'Last Modified' and 'Edit this page' links.
   BookRepo = 'https://github.com/storj/docs'

@@ -63,3 +63,8 @@
   border-inline-start-color: rgb(149, 200, 91);
   background-color: rgba(149, 200, 91, 0.1);
 }
+
+.book-menu input.toggle+label::after {
+  font-size: 2em;
+  line-height: 0.5em;
+}

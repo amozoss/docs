@@ -17,7 +17,6 @@ import (
 fix external links
 fix external images
 fix `{% `stuff
-fix menu collapsing
 fix menu order
 
 */
