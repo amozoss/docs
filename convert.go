@@ -358,9 +358,17 @@ func (conv *Convert) LiftTitle(page *Page) {
 	// page.Content = mustReplaceFirst("\n?"+rxTitle, page.Content, "")
 }
 
+const youtubeLink = `{% embed url="https://www.youtube.com/watch?v=H6bRljVjR48" %}
+Video Tutorial for the Setup Process
+{% endembed %}`
+
 // ReplaceTags implements replacing tags of `{% *** %}`
 func (conv *Convert) ReplaceTags(page *Page) {
 	tabIndex := 0
+
+	if page.ContentPath == "sno-applications/qnap-storage-node-app.md" {
+		page.Content = strings.ReplaceAll(page.Content, youtubeLink, "{{< youtube H6bRljVjR48 >}}")
+	}
 
 	rxTag := mustCompile(`{%\s*([a-zA-Z0-9-]+)\s(.*)\s*%}`)
 	page.Content = rxTag.ReplaceAllStringFunc(page.Content, func(tag string) string {
@@ -398,9 +406,6 @@ func (conv *Convert) ReplaceTags(page *Page) {
 				// TODO: replace with youtube link
 				return `{{< biglink href="` + strings.TrimSpace(url) + `" >}}` + url + `{{< /biglink >}}`
 			}
-		case "endembed":
-			// TODO: needs special case
-			return ``
 		case "content-ref":
 			// Fix {% content-ref url="billing-and-payment.md" %} -->
 			// TODO: needs special case
