@@ -230,6 +230,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.FixTrailingSpace(&page)
 	conv.FixLinksToReadme(&page)
 	conv.FixImageLinks(&page)
+	conv.ReplaceMath(&page)
 
 	targetPath := path.Join(conv.ContentDir, conv.TargetDir, contentPath)
 	if strings.EqualFold(path.Base(targetPath), "README.md") {
@@ -463,6 +464,15 @@ func (conv *Convert) FixImageLinks(page *Page) {
 		}
 		return "![" + title + "](" + url + ")"
 	})
+}
+
+// ReplaceMath replaces multiline $$\sqrt{}$$ with {{< katex >}}\sqrt{}{{< /katex >}}.
+func (conv *Convert) ReplaceMath(page *Page) {
+	page.Content = replaceAll(
+		`\$\$\n(.*)\n\$\$`,
+		page.Content,
+		"{{< katex display >}}\n$1\n{{< /katex >}}",
+	)
 }
 
 func (conv *Convert) AddSectionIndices() {
