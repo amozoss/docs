@@ -231,6 +231,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.FixLinksToReadme(&page)
 	conv.FixImageLinks(&page)
 	conv.ReplaceMath(&page)
+	conv.ReplaceStarryNight(&page)
 
 	targetPath := path.Join(conv.ContentDir, conv.TargetDir, contentPath)
 	if strings.EqualFold(path.Base(targetPath), "README.md") {
@@ -473,6 +474,12 @@ func (conv *Convert) ReplaceMath(page *Page) {
 		page.Content,
 		"{{< katex display >}}\n$1\n{{< /katex >}}",
 	)
+}
+
+// ReplaceStarryNight replaces **** in a row, which seems a weird gitbook artifact.
+func (conv *Convert) ReplaceStarryNight(page *Page) {
+	page.Content = replaceAll(`(\s*\*\*\*\*\s+|(\s+\*\*\*\*\s*))`, page.Content, " ")
+	page.Content = replaceAll(`\*\*\*\*`, page.Content, "")
 }
 
 func (conv *Convert) AddSectionIndices() {
