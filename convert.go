@@ -48,6 +48,7 @@ var urlToTitle = map[string]string{
 	"https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_server_configuration#windows-configurations-in-sshd_config": "Windows Configurations in sshd_config",
 	"https://docs.microsoft.com/en-us/windows/wsl/install-win10":                                                                                "Install WSL",
 	"https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/":                                                                              "How to Enable SSH on a Mac from the Command Line",
+	"https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line":                                                                               "How to Enable SSH on a Mac from the Command Line",
 	"https://superuser.com/questions/364304/how-do-i-configure-ssh-on-os-x":                                                                     "How do I configure SSH on OS X?",
 }
 
