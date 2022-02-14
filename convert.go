@@ -236,6 +236,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	page := ParsePage(contentPath, string(data))
 	conv.AddWeight(&page)
 	conv.LiftTitle(&page)
+	conv.ReplaceContentRefs(&page)
 	conv.ReplaceTags(&page)
 	conv.FixTrailingSpace(&page)
 	conv.FixLinksToReadme(&page)
@@ -370,6 +371,44 @@ func (conv *Convert) LiftTitle(page *Page) {
 	// page.Content = mustReplaceFirst("\n?"+rxTitle, page.Content, "")
 }
 
+// ReplaceContentRefs implements replacing multi-line content-ref tags:
+//
+//   {% content-ref url="before-you-begin/auth-token.md" %}
+//   [auth-token.md](before-you-begin/auth-token.md)
+//   {% endcontent-ref %}
+func (conv *Convert) ReplaceContentRefs(page *Page) {
+	rxContentRef := mustCompile(
+		`{%\s+content-ref url="([^"]+)"\s+%}\n` +
+			`\[([^\]]+)\]\(([^)]+)\)\n` +
+			`{%\s+endcontent-ref\s+%}`)
+
+	page.Content = rxContentRef.ReplaceAllStringFunc(page.Content, func(match string) string {
+		matches := rxContentRef.FindStringSubmatch(match)
+		url := matches[1]
+		title := matches[2]
+		link := matches[3]
+		ref := strings.TrimSpace(url)
+		expectedTitle := path.Base(link)
+
+		if url == "broken-reference" {
+			return `{{< biglink >}}Broken Reference{{< /biglink >}}`
+		}
+		if strings.HasSuffix(url, "/") {
+			expectedTitle = path.Base(path.Dir(link))
+			ref += "_index.md"
+		}
+
+		if url != link {
+			panic(fmt.Sprintf("content-ref link mismatch: %s\nurl:%q\nlink:%q", match, url, link))
+		}
+		if title != expectedTitle {
+			panic(fmt.Sprintf("content-ref title mismatch: %s\ntitle:%q\nexpected:%q", match, title, expectedTitle))
+		}
+
+		return `{{< biglink relref="` + ref + `" />}}`
+	})
+}
+
 const youtubeLink = `{% embed url="https://www.youtube.com/watch?v=H6bRljVjR48" %}
 Video Tutorial for the Setup Process
 {% endembed %}`
@@ -424,16 +463,6 @@ func (conv *Convert) ReplaceTags(page *Page) {
 					return `{{< biglink href="` + strings.TrimSpace(url) + `" >}}` + title + `{{< /biglink >}}`
 				}
 			}
-		case "content-ref":
-			var url string
-			if match(`^url="(.*)"$`, strings.TrimSpace(tok[2]), nil, &url) {
-				if url == "broken-reference" {
-					return `{{< biglink >}}`
-				}
-				return `{{< biglink relref="` + strings.TrimSpace(url) + `" >}}`
-			}
-		case "endcontent-ref":
-			return `{{< /biglink >}}`
 		}
 
 		panic("unhandled: " + tag)
