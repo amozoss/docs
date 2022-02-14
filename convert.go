@@ -509,7 +509,7 @@ func (conv *Convert) FixImageLinks(page *Page) {
 
 		hasAngle := url[0] == '<'
 		if hasAngle {
-			url = url[1:]
+			url = url[1 : len(url)-1]
 		}
 
 		p := strings.Index(url, ".gitbook/assets")
@@ -519,16 +519,10 @@ func (conv *Convert) FixImageLinks(page *Page) {
 			if noPrefix == "/0" || noPrefix == "/1" || noPrefix == "/2" || noPrefix == "/3" {
 				noPrefix += "-fix.png"
 			}
-			abs := assetsDir + noPrefix
-			// suuper hacky code to calculate relative path
-			n := strings.Count(page.ContentPath, "/")
-			if filepath.Base(page.ContentPath) != "README.md" {
-				n++
-			}
-			url = strings.Repeat("../", n) + abs
+			url = "/" + assetsDir + noPrefix
 		}
 		if hasAngle {
-			url = "<" + url
+			url = "<" + url + ">"
 		}
 		return "![" + title + "](" + url + ")"
 	})
