@@ -16,7 +16,7 @@ See [Dashboard](../../setup/cli/dashboard.md#storage-node-operator-web-dashboard
 {% endtab %}
 {% endtabs %}
 
-## Install a ssh server on your PC with the storagenode
+## Install a ssh server on your PC with the storagenodestoragenode
 
 {% tabs %}
 {% tab title="Windows" %}
@@ -29,8 +29,8 @@ sudo apt update && sudo apt install ssh -y
 ```
 {% endtab %}
 
-{% tab title="macOS" %}
-{% embed url="https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/" %}
+{% tab title="MacOS" %}
+{% embed url="https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line" %}
 {% endtab %}
 {% endtabs %}
 
@@ -51,8 +51,8 @@ sudo apt update && sudo apt install ssh -y
 ```
 {% endtab %}
 
-{% tab title="macOS" %}
-{% embed url="https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/" %}
+{% tab title="MacOS" %}
+{% embed url="https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line" %}
 {% endtab %}
 
 {% tab title="Android" %}
@@ -105,7 +105,7 @@ Launch the **Termius** application
 
 Navigate to the **Keychain** via hamburger menu
 
-### Keychain
+#### Keychain
 
 ![](../../.gitbook/assets/Screenshot\_2020-04-10-01-36-41-348\_com.server.auditor.ssh.client.png)
 
@@ -113,13 +113,13 @@ Tap on plus sign and select **New Identity**.
 
 ![](../../.gitbook/assets/Screenshot\_2020-04-10-01-36-53-829\_com.server.auditor.ssh.client.png)
 
-#### New Identity
+**New Identity**
 
 Specify a name of the Identity in the field **Name**, provide a username for your PC with storagenode in the **Username** fieled, specify a password in the **Password** field, confirm creation.
 
 Navigate to the **Hosts** in the hamburger menu.
 
-### Hosts
+#### Hosts
 
 ![](../../.gitbook/assets/Screenshot\_2020-04-10-01-36-29-564\_com.server.auditor.ssh.client.png)
 
@@ -127,7 +127,7 @@ Create a new host with the plus sign.
 
 ![](../../.gitbook/assets/Screenshot\_2020-04-10-02-15-11-130\_com.server.auditor.ssh.client.png)
 
-#### New host
+**New host**
 
 Specify alias for the host, i.e. _MyHomePC_. Provide the local or public hostname or IP address in the **Hostname or IP Address** field. Tap on **Username** icon and select the Identity, created earlier. In our example - _user_. Confirm creation of the host.
 
@@ -173,7 +173,7 @@ Navigate to the **Port forwarding** screen in the hamburger menu.
 
 ![](../../.gitbook/assets/Screenshot\_2020-04-10-02-24-32-574\_com.server.auditor.ssh.client.png)
 
-### Port forwarding
+#### Port forwarding
 
 ![](../../.gitbook/assets/Screenshot\_2020-04-11-17-22-25-683\_com.server.auditor.ssh.client.png)
 
@@ -242,11 +242,11 @@ ssh-keygen
 {% tab title="Android" %}
 Navigate to the **Keychain** in the hamburger menu, select created Identity by tap on Identity icon then tap on pencil icon to edit an Identity, tap on **Key** icon, you will see a screen _Select key_.
 
-#### Select key
+**Select key**
 
 Select existing key or tap on plus sign, select the option **Generate key** to generate a new key.
 
-#### Generate Key
+**Generate Key**
 
 Specify a name for the key in the field **Name**, provide a passphrase (optional) in the field **Passphrase** and confirm.
 
@@ -310,14 +310,14 @@ We use the same application, so all steps are similar to Android version, please
 
 ## Disable the password login on your ssh server with storagenode
 
+{% tabs %}
+{% tab title="Windows" %}
 We need to specify options `PubkeyAuthentication yes` and `PasswordAuthentication no` in the config file for the ssh daemon. So, return back to your server with storagenode.
 
 {% hint style="warning" %}
 You can use a ssh terminal to make these modifications, but be careful - if you have not added your key to the `.ssh/authorized_keys` file on your ssh server on previous steps, you will lose an access via ssh to your server.
 {% endhint %}
 
-{% tabs %}
-{% tab title="Windows" %}
 Open the config file `%programdata%\ssh\sshd_config` with Notepad++ and set options `PubkeyAuthentication yes` and `PasswordAuthentication no`, save changes and restart the `sshd` service either from the **Services** applet or from the elevated Powershell:
 
 ```
@@ -335,8 +335,10 @@ sudo service ssh restart
 ```
 {% endtab %}
 
-{% tab title="macOS" %}
+{% tab title="MacOS" %}
 Edit the configuration file `/private/etc/ssh/sshd_config` with a plain text editor, for example - with `nano`, set the `PubkeyAuthentication yes` and `PasswordAuthentication no` options, save the config file and restart the `ssh` daemon
+
+
 
 ```
 sudo launchctl stop com.openssh.sshd
