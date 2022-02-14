@@ -405,6 +405,7 @@ func (conv *Convert) ReplaceContentRefs(page *Page) {
 			panic(fmt.Sprintf("content-ref title mismatch: %s\ntitle:%q\nexpected:%q", match, title, expectedTitle))
 		}
 
+		ref = conv.NearRef(page, ref)
 		return `{{< biglink relref="` + ref + `" />}}`
 	})
 }
@@ -467,6 +468,23 @@ func (conv *Convert) ReplaceTags(page *Page) {
 
 		panic("unhandled: " + tag)
 	})
+}
+
+func (conv *Convert) NearRef(page *Page, rel string) string {
+	if strings.HasPrefix(rel, "http") || strings.HasPrefix(rel, "/") {
+		return rel
+	}
+	if strings.HasPrefix(rel, "../") {
+		return conv.AbsRef(page, rel)
+	}
+	return rel
+}
+
+func (conv *Convert) AbsRef(page *Page, rel string) string {
+	if strings.HasPrefix(rel, "http") || strings.HasPrefix(rel, "/") {
+		return rel
+	}
+	return "/" + path.Clean(path.Join(path.Dir(page.ContentPath), rel))
 }
 
 // FixTrailingSpace fixes some weird content issues in the markdown files.
