@@ -17,4 +17,4 @@ publishDir = 'public/node'
 
 [params]
   BookRepo = 'https://github.com/storj/node'
-  BookEditPath = 'edit/main/content/node'
+  # BookEditPath = 'edit/main/content/node'

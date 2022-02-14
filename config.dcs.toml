@@ -13,4 +13,4 @@ publishDir = 'public/dcs'
 
 [params]
   BookRepo = 'https://github.com/storj/docs'
-  BookEditPath = 'edit/main/content/dcs'
+  # BookEditPath = 'edit/main/content/dcs'
