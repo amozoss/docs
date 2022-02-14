@@ -8,7 +8,7 @@
 {{ end }}
 {{ with .Get "relref" }}
   {{ $ref = relref $ . }}
-  {{ $content = or $content ($.Page.GetPage .).Title }}
+  {{ if not $content }}{{ $content = ($.Page.GetPage .).Title }}{{ end }}
   {{ $img = "svg/toc.svg" }}
 {{ end }}
 <a {{ with $ref }} href="{{.}}" {{ end }} {{ with $target }} target="{{.}}" rel="noopener" {{ end }} class="book-big-link{{ with .Get "class" }} {{ . }}{{ end }}"><img src="{{ $img | relURL }}">{{ $content }}</a>

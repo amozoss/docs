@@ -1,0 +1,16 @@
+{{ define "main" }}
+  {{ if .Content }}
+  <article class="markdown">
+    {{- .Content -}}
+  </article>
+  {{ else }}
+  <article class="markdown">
+    <h1>{{ .Title }}</h1>
+    {{ range sort .Pages }}
+    <a href="{{ .RelPermalink }}" class="book-big-link"><img src="{{ "svg/toc.svg" | relURL }}">{{ partial "docs/title.html" . }}</a>
+    {{ end }}
+  </article>
+  {{ end }}
+{{ end }}
+
+{{ define "toc" }}<!-- -->{{ end }}
