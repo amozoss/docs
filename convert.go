@@ -71,9 +71,9 @@ func mustRun(exe string, args ...string) {
 }
 
 var skipDownload = flag.Bool("skip-download", false, "don't try to cache new images")
+var skipWorktree = flag.Bool("skip-worktree", false, "skips worktree logic")
 
 func main() {
-	skipWorktree := flag.Bool("skip-worktree", false, "skips worktree logic")
 	flag.Parse()
 
 	if *skipWorktree {
@@ -90,6 +90,7 @@ func main() {
 
 	// start conversion
 	failures := []error{}
+	warnings := []error{}
 	convs := []Convert{
 		{
 			SourceDir:  "gitbook/dcs/docs",
@@ -109,8 +110,14 @@ func main() {
 		fmt.Println("# Converting", conv.SourceDir)
 		conv.Run()
 		failures = append(failures, conv.Failures...)
+		warnings = append(warnings, conv.Warnings...)
 	}
-
+	if len(warnings) > 0 {
+		fmt.Println("# WARNINGS")
+		for _, warn := range warnings {
+			fmt.Println(warn)
+		}
+	}
 	if len(failures) > 0 {
 		fmt.Println("# ERRORS")
 		for _, fail := range failures {
@@ -129,6 +136,7 @@ type Convert struct {
 	OrderByFolder map[string][]SummaryItem
 
 	Failures []error
+	Warnings []error
 }
 
 type SummaryItem struct {
@@ -533,7 +541,7 @@ func (conv *Convert) FixImageLinks(page *Page) {
 			var err error
 			asset, err = conv.DownloadAndCacheImage(page, url)
 			if err != nil {
-				conv.Failures = append(conv.Failures, fmt.Errorf("failed to download %s in %s: %w", url, page.ContentPath, err))
+				conv.Warnings = append(conv.Warnings, fmt.Errorf("failed to download %s in %s: %w", url, page.ContentPath, err))
 			}
 			url = asset
 		}
