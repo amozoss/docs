@@ -483,7 +483,7 @@ func (conv *Convert) ReplaceMath(page *Page) {
 
 // ReplaceStarryNight replaces **** in a row, which seems a weird gitbook artifact.
 func (conv *Convert) ReplaceStarryNight(page *Page) {
-	page.Content = replaceAll(`(\s*\*\*\*\*\s+|(\s+\*\*\*\*\s*))`, page.Content, " ")
+	page.Content = replaceAll(`( *\*\*\*\* +|( +\*\*\*\* *))`, page.Content, " ")
 	page.Content = replaceAll(`\*\*\*\*`, page.Content, "")
 }
 
