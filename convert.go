@@ -272,7 +272,7 @@ type Page struct {
 }
 
 func ParsePage(contentPath, content string) Page {
-	tokens := strings.Split(content, "---\n")
+	tokens := strings.SplitN(content, "---\n", 3)
 	if len(tokens) == 1 {
 		return Page{
 			ContentPath: contentPath,
