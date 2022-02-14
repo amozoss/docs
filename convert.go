@@ -1,9 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"flag"
 	"fmt"
+	"io"
 	"io/fs"
+	"net/http"
 	"os"
 	"os/exec"
 	"path"
@@ -11,17 +16,14 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
-/*
-
-fix external links
-fix external images
-fix `{% `stuff
-
-*/
-
 const assetsDir = "_assets"
+
+var httpClient = http.Client{
+	Timeout: 2 * time.Second,
+}
 
 var menuMapping = map[string]topLevelMenu{
 	"dcs/storage":                        {"Decentralized Cloud Storage", 10},
@@ -68,8 +70,11 @@ func mustRun(exe string, args ...string) {
 	}
 }
 
+var skipDownload = flag.Bool("skip-download", false, "don't try to cache new images")
+
 func main() {
 	skipWorktree := flag.Bool("skip-worktree", false, "skips worktree logic")
+	flag.Parse()
 
 	if *skipWorktree {
 		// reset gitbook
@@ -502,10 +507,10 @@ func (conv *Convert) FixLinksToReadme(page *Page) {
 
 // FixImageLinks fixes links to "![xyz](<a/b/c>)" --> "![xyz](a/b/c)".
 func (conv *Convert) FixImageLinks(page *Page) {
-	rx := mustCompile(`!\[([^\]]*)\]\((<[^>]*>|[^\)]*)\)`)
+	rx := mustCompile(`([^\\])!\[([^\]]*)\]\((<[^>]*>|[^\)]*)\)`)
 	page.Content = rx.ReplaceAllStringFunc(page.Content, func(m string) string {
 		match := rx.FindStringSubmatch(m)
-		title, url := match[1], match[2]
+		prefix, title, url := match[1], match[2], match[3]
 		url = strings.ReplaceAll(url, "\\_", "_")
 
 		hasAngle := url[0] == '<'
@@ -522,11 +527,88 @@ func (conv *Convert) FixImageLinks(page *Page) {
 			}
 			url = "/" + assetsDir + noPrefix
 		}
+
+		if strings.HasPrefix(url, "http") {
+			var asset string
+			var err error
+			asset, err = conv.DownloadAndCacheImage(page, url)
+			if err != nil {
+				conv.Failures = append(conv.Failures, fmt.Errorf("failed to download %s in %s: %w", url, page.ContentPath, err))
+			}
+			url = asset
+		}
+
 		if hasAngle {
 			url = "<" + url + ">"
 		}
-		return "![" + title + "](" + url + ")"
+		return prefix + "![" + title + "](" + url + ")"
 	})
+}
+
+func fileExists(path string) bool {
+	_, err := os.Lstat(path)
+	return err == nil
+}
+
+func (conv *Convert) DownloadAndCacheImage(page *Page, url string) (string, error) {
+	h := sha256.Sum256([]byte(url))
+	hash := hex.EncodeToString(h[:6])
+	suffix := "-" + path.Base(url)
+	ext := path.Ext(url)
+	if len(ext) != 4 { // e.g. ".png"
+		ext = "" // probably some garbage
+	}
+	if len(suffix) > 16 {
+		suffix = ext
+	}
+	cachedFile := "cache-" + hash + suffix
+	target := path.Join(filepath.Join(conv.ExtraDir, conv.TargetDir, assetsDir, cachedFile))
+
+	if ext == "" {
+		for _, guess := range []string{".png", ".gif", ".jpg", ".svg"} {
+			if fileExists(target + guess) {
+				return cachedFile + guess, nil
+			}
+		}
+	} else {
+		if fileExists(target) {
+			return cachedFile, nil
+		}
+	}
+
+	if *skipDownload {
+		return url, nil
+	}
+
+	resp, err := httpClient.Get(url)
+	if err != nil {
+		return url, fmt.Errorf("get failed: %w", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return url, fmt.Errorf("got status %v %v: %w", resp.Status, resp.StatusCode, err)
+	}
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return url, fmt.Errorf("read-all failed: %w", err)
+	}
+
+	if ext == "" {
+		switch {
+		case bytes.HasPrefix(data, []byte("GIF8")):
+			ext = ".gif"
+		case bytes.HasPrefix(data, []byte("\x89PNG")):
+			ext = ".png"
+		case bytes.HasPrefix(data, []byte("\xFF\xD8\xFF")):
+			ext = ".jpg"
+		default:
+			return url, fmt.Errorf("unknown file type %q", data[:8])
+		}
+		cachedFile += ext
+		target += ext
+	}
+
+	return "", writeFile(target, data)
 }
 
 // FixRegularLinks fixes links to "[xyz](<../b/c>)" --> "[xyz](/a/b/c)".

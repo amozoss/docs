@@ -37,7 +37,7 @@ jobs:
           extended: true
 
       - name: Convert Pages
-        run: go run . -skip-worktree
+        run: go run . -skip-worktree -skip-download
 
       - name: Run Hugo
         run: make
