@@ -95,6 +95,7 @@ func main() {
 		conv.Run()
 		failures = append(failures, conv.Failures...)
 	}
+
 	if len(failures) > 0 {
 		fmt.Println("# ERRORS")
 		for _, fail := range failures {
@@ -384,7 +385,11 @@ func (conv *Convert) ReplaceTags(page *Page) {
 		case "tab":
 			var title string
 			if match(`^title="(.*)"$`, strings.TrimSpace(tok[2]), nil, &title) {
-				return `{{< tab "` + strings.TrimSpace(title) + `" >}}`
+				title = strings.TrimSpace(title)
+				if strings.EqualFold(title, "macOS") { // fix some misnamed tabs
+					title = "macOS"
+				}
+				return `{{< tab "` + title + `" >}}`
 			}
 		case "endtab":
 			return `{{< /tab >}}`
