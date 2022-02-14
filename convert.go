@@ -76,7 +76,8 @@ var skipWorktree = flag.Bool("skip-worktree", false, "skips worktree logic")
 func main() {
 	flag.Parse()
 
-	if *skipWorktree {
+	if !*skipWorktree {
+		fmt.Println("# Processing worktree")
 		// reset gitbook
 		run("git", "worktree", "remove", "gitbook/dcs")
 		mustRun("git", "worktree", "add", "gitbook/dcs", "origin/gitbook-sync")

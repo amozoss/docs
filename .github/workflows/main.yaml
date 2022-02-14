@@ -37,10 +37,10 @@ jobs:
           extended: true
 
       - name: Convert Pages
-        run: go run . --skip-worktree --skip-download
+        run: make convert-ci
 
       - name: Run Hugo
-        run: make
+        run: make build
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
