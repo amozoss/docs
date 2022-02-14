@@ -1,17 +1,32 @@
 .markdown {
-  // {{< embed >}}
-  a.embed {
+  // {{< biglink >}}
+  .book-big-link {
     display: block;
-    font-size: $font-size-14;
+    font-size: $font-size-16;
+    font-weight: 600;
     color: var(--color-link);
-    line-height: $padding-16 * 2;
-    padding: 0 $padding-16;
-    border: $padding-1 solid var(--color-link);
+    line-height: $padding-32;
+    padding: $padding-16 $padding-32 $padding-16 $padding-16;
+    margin: $padding-16 0;
+    border: $padding-1 solid var(--gray-500);
     border-radius: $border-radius;
     cursor: pointer;
 
     &:hover {
+      border-color: var(--color-link);
       text-decoration: none;
+    }
+    &:visited {
+      text-decoration: none;
+    }
+
+    img {
+      margin-bottom: 2px;
+      height: 2em;
+      width: 2em;
+      vertical-align: middle;
+      line-height: $padding-32;
+      margin-inline-end: 0.5em;
     }
   }
 }
@@ -79,6 +94,10 @@
 
   .book-tabs-content {
     background: var(--body-background);
+  }
+
+  input[type="radio"] + label:hover {
+    background: var(--gray-100);
   }
 
   input[type="radio"]:checked + label {

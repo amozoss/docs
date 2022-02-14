@@ -42,6 +42,15 @@ var menuMapping = map[string]topLevelMenu{
 	"node/solution-architectures": {"Solution Architectures", 60},
 }
 
+var urlToTitle = map[string]string{
+	"https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse":                                           "Get started with OpenSSH",
+	"https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse#installing-openssh-with-powershell":        "Install OpenSSH using Windows Settings",
+	"https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_server_configuration#windows-configurations-in-sshd_config": "Windows Configurations in sshd_config",
+	"https://docs.microsoft.com/en-us/windows/wsl/install-win10":                                                                                "Install WSL",
+	"https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/":                                                                              "How to Enable SSH on a Mac from the Command Line",
+	"https://superuser.com/questions/364304/how-do-i-configure-ssh-on-os-x":                                                                     "How do I configure SSH on OS X?",
+}
+
 func run(exe string, args ...string) {
 	cmd := exec.Command(exe, args...)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
@@ -409,17 +418,22 @@ func (conv *Convert) ReplaceTags(page *Page) {
 		case "embed":
 			var url string
 			if match(`^url="(.*)"$`, strings.TrimSpace(tok[2]), nil, &url) {
-				// TODO: fetch link title
-				// TODO: replace with youtube link
-				return `{{< biglink href="` + strings.TrimSpace(url) + `" >}}` + url + `{{< /biglink >}}`
+				url = strings.TrimSpace(url)
+				title, ok := urlToTitle[url]
+				if ok {
+					return `{{< biglink href="` + strings.TrimSpace(url) + `" >}}` + title + `{{< /biglink >}}`
+				}
 			}
 		case "content-ref":
-			// Fix {% content-ref url="billing-and-payment.md" %} -->
-			// TODO: needs special case
-			return ``
+			var url string
+			if match(`^url="(.*)"$`, strings.TrimSpace(tok[2]), nil, &url) {
+				if url == "broken-reference" {
+					return `{{< biglink >}}`
+				}
+				return `{{< biglink relref="` + strings.TrimSpace(url) + `" >}}`
+			}
 		case "endcontent-ref":
-			// TODO: needs special case
-			return ``
+			return `{{< /biglink >}}`
 		}
 
 		panic("unhandled: " + tag)

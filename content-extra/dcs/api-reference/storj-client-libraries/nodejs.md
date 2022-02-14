@@ -2,6 +2,5 @@
 title: "NodeJS"
 link: https://www.npmjs.com/package/uplink-nodejs
 weight: -50
+type: link
 ---
-
-{{< biglink "https://www.npmjs.com/package/uplink-nodejs" >}}

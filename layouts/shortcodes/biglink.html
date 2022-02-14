@@ -1,12 +1,14 @@
 {{ $ref := "" }}
 {{ $target := "" }}
+{{ $content := .Inner | .Page.RenderString }}
+{{ $img := "svg/external-link.svg" }}
 {{ with .Get "href" }}
   {{ $ref = . }}
   {{ $target = "_blank" }}
 {{ end }}
 {{ with .Get "relref" }}
   {{ $ref = relref $ . }}
+  {{ $content = or $content ($.Page.GetPage .).Title }}
+  {{ $img = "svg/toc.svg" }}
 {{ end }}
-<a {{ with $ref }} href="{{.}}" {{ end }} {{ with $target }} target="{{.}}" rel="noopener" {{ end }} class="embed{{ with .Get "class" }} {{ . }}{{ end }}">
-  {{ .Inner | .Page.RenderString }}
-</a>
+<a {{ with $ref }} href="{{.}}" {{ end }} {{ with $target }} target="{{.}}" rel="noopener" {{ end }} class="book-big-link{{ with .Get "class" }} {{ . }}{{ end }}"><img src="{{ $img | relURL }}">{{ $content }}</a>

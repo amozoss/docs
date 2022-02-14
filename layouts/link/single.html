@@ -1,0 +1,7 @@
+{{ define "main" }}
+<article class="markdown">
+  <a href="{{ .Params.Link }}" target="_blank" rel="noopener" class="book-big-link"><img src="{{ "svg/external-link.svg" | relURL }}">{{ .Title }}</a>
+</article>
+{{ end }}
+
+{{ define "toc" }}<!-- -->{{ end }}
