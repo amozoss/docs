@@ -13,4 +13,4 @@
   {{ end }}
 {{ end }}
 
-{{ define "toc" }}<!-- -->{{ end }}
+{{ define "toc" }}{{ if .Content }}{{ partial "docs/toc" . }}{{ end }}{{ end }}
