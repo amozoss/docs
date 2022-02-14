@@ -242,6 +242,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.FixTrailingSpace(&page)
 	conv.FixLinksToReadme(&page)
 	conv.FixImageLinks(&page)
+	conv.FixRegularLinks(&page)
 	conv.ReplaceMath(&page)
 	conv.ReplaceStarryNight(&page)
 
@@ -525,6 +526,21 @@ func (conv *Convert) FixImageLinks(page *Page) {
 			url = "<" + url + ">"
 		}
 		return "![" + title + "](" + url + ")"
+	})
+}
+
+// FixRegularLinks fixes links to "[xyz](<../b/c>)" --> "[xyz](/a/b/c)".
+func (conv *Convert) FixRegularLinks(page *Page) {
+	rx := mustCompile(`([^!])\[([^\]]*)\]\((<[^>]*>|[^\)]*)\)`)
+	page.Content = rx.ReplaceAllStringFunc(page.Content, func(m string) string {
+		match := rx.FindStringSubmatch(m)
+		nonMatch, title, url := match[1], match[2], match[3]
+
+		if strings.HasPrefix(url, "http") {
+			return m
+		}
+
+		return nonMatch + "[" + title + "](" + conv.NearRef(page, url) + ")"
 	})
 }
 
