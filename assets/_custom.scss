@@ -40,18 +40,6 @@
   font-weight: 600;
 }
 
-/* adjust tabs border */
-.markdown .book-tabs {
-  border-color: var(--gray-500);
-
-  label {
-    border-bottom: 2px transparent;
-  }
-  input[type="radio"]:checked + label {
-    border-bottom: 2px solid var(--color-link);
-  }
-}
-
 .toc-title {
   font-weight: 600;
   margin-bottom: 1em;
@@ -77,4 +65,24 @@
 
 .book-search input {
   border: 1px solid var(--gray-200)
+}
+
+/* make tabs look nicer */
+
+.markdown .book-tabs {
+  border-color: var(--gray-500);
+  background: var(--gray-200);
+
+  label {
+    border-bottom: 2px transparent;
+  }
+
+  .book-tabs-content {
+    background: var(--body-background);
+  }
+
+  input[type="radio"]:checked + label {
+    border-bottom: 2px solid var(--color-link);
+    background: var(--body-background);
+  }
 }
