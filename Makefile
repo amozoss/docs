@@ -1,5 +1,5 @@
 build:
-	hugo
+	hugo --minify
 
 convert:
 	go run .
