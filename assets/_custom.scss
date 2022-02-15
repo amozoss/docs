@@ -145,20 +145,3 @@ body, .book-menu-content {
     background: var(--body-background);
   }
 }
-
-
-/* Nicer fonts */
-
-@font-face {
-  font-family: 'Inter';
-  font-display: swap;
-  src: local(''),
-       url('fonts/Inter-VariableFont_slnt_wght.ttf') format('ttf');
-}
-body {
-  font-family: 'Inter', 'Roboto', sans-serif;
-}
-
-code {
-  font-family: 'Roboto Mono', monospace;
-}
