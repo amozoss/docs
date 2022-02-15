@@ -259,6 +259,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.FixRegularLinks(&page)
 	conv.ReplaceMath(&page)
 	conv.ReplaceStarryNight(&page)
+	conv.ReplaceUnderlines(&page)
 
 	targetPath := path.Join(conv.ContentDir, conv.TargetDir, contentPath)
 	if strings.EqualFold(path.Base(targetPath), "README.md") {
@@ -648,6 +649,12 @@ func (conv *Convert) ReplaceMath(page *Page) {
 func (conv *Convert) ReplaceStarryNight(page *Page) {
 	page.Content = replaceAll(`( *\*\*\*\* +|( +\*\*\*\* *))`, page.Content, " ")
 	page.Content = replaceAll(`\*\*\*\*`, page.Content, "")
+}
+
+// ReplaceUnderline replaces __ in a row, which seems a weird gitbook artifact.
+func (conv *Convert) ReplaceUnderlines(page *Page) {
+	page.Content = replaceAll(`( *__ +|( +__ *))`, page.Content, " ")
+	page.Content = replaceAll(`\b__\b`, page.Content, "")
 }
 
 func (conv *Convert) AddSectionIndices() {
