@@ -31,6 +31,14 @@
   }
 }
 
+.book-section-flat {
+  span:first-child {
+    text-transform: uppercase;
+    opacity: 0.8;
+    letter-spacing: 0.04em;
+  }
+}
+
 /* Adjust heading weight */
 
 .markdown {
@@ -70,6 +78,7 @@
 .book-menu input.toggle+label::after {
   font-size: 2em;
   line-height: 0.5em;
+  opacity: 0.8;
 }
 
 .book-external-link .book-icon {
