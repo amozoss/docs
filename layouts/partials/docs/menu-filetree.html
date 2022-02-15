@@ -1,11 +1,6 @@
-{{ $bookSection := default "docs" .Site.Params.BookSection  }}
-{{ if eq $bookSection "*" }}
-  {{ $bookSection = "/" }}{{/* Backward compatibility */}}
-{{ end }}
-
-{{ with .Site.GetPage $bookSection }}
+{{ with .FirstSection }}{{ if .Parent }}
   {{ template "book-section-children" (dict "Section" . "CurrentPage" $ "Level" 0) }}
-{{ end }}
+{{ end }}{{ end }}
 
 {{ define "book-section-children" }}{{/* (dict "Section" .Section "CurrentPage" .CurrentPage "Level" .Level) */}}
   <ul>

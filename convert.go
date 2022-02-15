@@ -250,7 +250,7 @@ func (conv *Convert) Convert(fullPath string) error {
 
 	page := ParsePage(contentPath, string(data))
 	conv.AddWeight(&page)
-	// conv.AddAlias(&page)
+	conv.AddAlias(&page)
 	conv.LiftTitle(&page)
 	conv.ReplaceContentRefs(&page)
 	conv.ReplaceTags(&page)
@@ -376,6 +376,18 @@ func (conv *Convert) LiftTitle(page *Page) {
 		return
 	}
 
+	if page.ContentPath == "_index.md" || page.ContentPath == "README.md" {
+		switch conv.TargetDir {
+		case "dcs":
+			page.FrontMatter = "title: \"DCS\"\n" + page.FrontMatter
+		case "node":
+			page.FrontMatter = "title: \"Node Operator\"\n" + page.FrontMatter
+		default:
+			panic(conv.TargetDir)
+		}
+		return
+	}
+
 	const rxTitle = `#\s*([^\n]+)\n`
 
 	var title string
@@ -404,7 +416,7 @@ func (conv *Convert) AddAlias(page *Page) {
 		alias = "/" + strings.TrimSuffix(page.ContentPath, ".md")
 	}
 
-	page.FrontMatter = "alias: \"" + alias + "\"\n" + page.FrontMatter
+	page.FrontMatter = "aliases: [\"" + alias + "\"]\n" + page.FrontMatter
 }
 
 // ReplaceContentRefs implements replacing multi-line content-ref tags:
@@ -510,7 +522,7 @@ func (conv *Convert) NearRef(page *Page, rel string) string {
 	if strings.HasPrefix(rel, "http") || strings.HasPrefix(rel, "/") {
 		return rel
 	}
-	if strings.HasPrefix(rel, "../") {
+	if strings.HasPrefix(rel, "../") || strings.HasPrefix(rel, "/") {
 		return conv.AbsRef(page, rel)
 	}
 	return rel
@@ -520,7 +532,10 @@ func (conv *Convert) AbsRef(page *Page, rel string) string {
 	if strings.HasPrefix(rel, "http") || strings.HasPrefix(rel, "/") {
 		return rel
 	}
-	return "/" + path.Clean(path.Join(path.Dir(page.ContentPath), rel))
+	if strings.HasPrefix(rel, "/") {
+		return "/" + path.Join(conv.TargetDir, rel)
+	}
+	return "/" + path.Clean(path.Join(conv.TargetDir, path.Dir(page.ContentPath), rel))
 }
 
 // FixTrailingSpace fixes some weird content issues in the markdown files.
@@ -554,7 +569,7 @@ func (conv *Convert) FixImageLinks(page *Page) {
 			if noPrefix == "/0" || noPrefix == "/1" || noPrefix == "/2" || noPrefix == "/3" {
 				noPrefix += "-fix.png"
 			}
-			url = "/" + assetsDir + noPrefix
+			url = "/" + conv.TargetDir + "/" + assetsDir + noPrefix
 		}
 
 		if strings.HasPrefix(url, "http") {
@@ -591,7 +606,7 @@ func (conv *Convert) DownloadAndCacheImage(page *Page, url string) (string, erro
 		suffix = ext
 	}
 	cachedFile := "cache-" + hash + suffix
-	target := path.Join(filepath.Join(conv.ExtraDir, conv.TargetDir, assetsDir, cachedFile))
+	target := path.Join(conv.ExtraDir, conv.TargetDir, assetsDir, cachedFile)
 
 	if ext == "" {
 		for _, guess := range []string{".png", ".gif", ".jpg", ".svg"} {
@@ -637,7 +652,7 @@ func (conv *Convert) DownloadAndCacheImage(page *Page, url string) (string, erro
 		target += ext
 	}
 
-	return "", writeFile(target, data)
+	return "/" + path.Join(conv.TargetDir, assetsDir, cachedFile), writeFile(target, data)
 }
 
 // FixRegularLinks fixes links to "[xyz](<../b/c>)" --> "[xyz](/a/b/c)".

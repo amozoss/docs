@@ -4,32 +4,10 @@ theme = 'github.com/alex-shpak/hugo-book'
 contentDir = 'content'
 staticDir = 'static'
 publishDir = 'public'
-defaultContentLanguage = 'dcs'
-defaultContentLanguageInSubdir = true
 
 # Book configuration
 disablePathToLower = false
 enableGitInfo = false
-
-# hack to use multi-language feature to create multiple
-# sites with different roots.
-[languages]
-  [languages.dcs]
-    languageName = 'DCS Docs'
-    contentDir = 'content/dcs'
-    weight = 1
-
-  [languages.node]
-    languageName = 'Node Docs'
-    contentDir = 'content/node'
-    weight = 2
-
-  [languages.node.menu]
-    [[languages.node.menu.before]]
-      name = "Signup for Auth Token"
-      url = "https://registration.storj.io"
-      weight = -970
-
 
 # Needed for mermaid/katex shortcodes
 [markup]

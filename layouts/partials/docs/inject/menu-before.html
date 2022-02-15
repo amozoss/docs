@@ -1,0 +1,6 @@
+<ul class="book-first-sections">
+  {{- range .Site.Sections -}}
+    {{- $active := eq $.FirstSection . -}}
+    <li {{if $active}} class="active"{{end}}><a href="{{ .Permalink }}">{{ .Title }}</a></li>
+  {{- end -}}
+</ul>

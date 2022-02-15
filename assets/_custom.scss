@@ -45,6 +45,21 @@
   }
 }
 
+.book-first-sections {
+  a {
+    font-weight: bold;
+  }
+  li {
+    margin: 0;
+  }
+  li.active {
+    background: var(--gray-500);
+  }
+  li a {
+    padding: 0.25em 0.5em;
+  }
+}
+
 /* Adjust heading weight */
 
 .markdown {
