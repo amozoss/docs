@@ -12,7 +12,7 @@ You can set up automatic updates for your `storagenode` Docker container using `
 
 First, please pull the latest watchtower image from docker:
 
-```
+```bash
 docker pull storjlabs/watchtower
 ```
 
