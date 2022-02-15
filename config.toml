@@ -1,4 +1,4 @@
-baseURL = 'https://docs.storj.io'
+baseURL = '/'
 title = 'Storj Docs'
 theme = 'github.com/alex-shpak/hugo-book'
 contentDir = 'content'
