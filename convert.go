@@ -250,6 +250,7 @@ func (conv *Convert) Convert(fullPath string) error {
 
 	page := ParsePage(contentPath, string(data))
 	conv.AddWeight(&page)
+	// conv.AddAlias(&page)
 	conv.LiftTitle(&page)
 	conv.ReplaceContentRefs(&page)
 	conv.ReplaceTags(&page)
@@ -386,6 +387,24 @@ func (conv *Convert) LiftTitle(page *Page) {
 	page.FrontMatter = "title: \"" + title + "\"\n" + page.FrontMatter
 	// hugo-book does not add the title automatically
 	// page.Content = mustReplaceFirst("\n?"+rxTitle, page.Content, "")
+}
+
+func (conv *Convert) AddAlias(page *Page) {
+	if conv.TargetDir != "dcs" {
+		return
+	}
+	if page.ContentPath == "_index.md" || page.ContentPath == "README.md" {
+		return
+	}
+
+	alias := ""
+	if path.Base(page.ContentPath) == "_index.md" || path.Base(page.ContentPath) == "README.md" {
+		alias = "/" + path.Dir(page.ContentPath)
+	} else {
+		alias = "/" + strings.TrimSuffix(page.ContentPath, ".md")
+	}
+
+	page.FrontMatter = "alias: \"" + alias + "\"\n" + page.FrontMatter
 }
 
 // ReplaceContentRefs implements replacing multi-line content-ref tags:
