@@ -1,46 +1,46 @@
-{{ with .FirstSection }}{{ if .Parent }}
-  {{ template "book-section-children" (dict "Section" . "CurrentPage" $ "Level" 0) }}
-{{ end }}{{ end }}
+{{- with .FirstSection -}}{{- if .Parent -}}
+  {{- template "book-section-children" (dict "Section" . "CurrentPage" $ "Level" 0) -}}
+{{- end -}}{{- end -}}
 
-{{ define "book-section-children" }}{{/* (dict "Section" .Section "CurrentPage" .CurrentPage "Level" .Level) */}}
+{{- define "book-section-children" -}}{{/* (dict "Section" .Section "CurrentPage" .CurrentPage "Level" .Level) */}}
   <ul>
-    {{ range (where .Section.Pages "Params.bookhidden" "ne" true) }}
-      {{ if .IsSection }}
+    {{- range (where .Section.Pages "Params.bookhidden" "ne" true) -}}
+      {{- if .IsSection -}}
         <li {{- if .Params.BookFlatSection }} class="book-section-flat" {{ end -}}>
           {{ template "book-page-link" (dict "Page" . "CurrentPage" $.CurrentPage "Level" (add $.Level 1)) }}
           {{ template "book-section-children" (dict "Section" . "CurrentPage" $.CurrentPage "Level" (add $.Level 1)) }}
         </li>
-      {{ else if and .IsPage (or .Content .Page.Params.link) }}
+      {{- else if and .IsPage (or .Content .Page.Params.link) -}}
         <li>
-          {{ template "book-page-link" (dict "Page" . "CurrentPage" $.CurrentPage "Level" (add $.Level 1)) }}
+          {{- template "book-page-link" (dict "Page" . "CurrentPage" $.CurrentPage "Level" (add $.Level 1)) -}}
         </li>
-      {{ end }}
-    {{ end }}
+      {{- end -}}
+    {{- end -}}
   </ul>
-{{ end }}
+{{- end -}}
 
 {{ define "book-page-link" }}{{/* (dict "Page" .Page "CurrentPage" .CurrentPage "Level" .Level) */}}
-  {{ $bookAutoCollapse := default 10000 .Page.Site.Params.BookAutoCollapseAfterLevel }}
-  {{ $current := eq .CurrentPage .Page }}
-  {{ $ancestor := .Page.IsAncestor .CurrentPage }}
+  {{- $bookAutoCollapse := default 10000 .Page.Site.Params.BookAutoCollapseAfterLevel -}}
+  {{- $current := eq .CurrentPage .Page -}}
+  {{- $ancestor := .Page.IsAncestor .CurrentPage -}}
 
-  {{ if (or .Page.Params.bookCollapseSection (and (gt .Level $bookAutoCollapse) .Page.IsSection)) }}
+  {{- if (or .Page.Params.bookCollapseSection (and (gt .Level $bookAutoCollapse) .Page.IsSection)) -}}
     <input type="checkbox" id="section-{{ md5 .Page }}" class="toggle" {{ if or $current $ancestor }}checked{{ end }} />
     <label for="section-{{ md5 .Page }}" class="flex justify-between">
-      <a {{ if .Page.Content }}href="{{ .Page.Permalink }}"{{ else }}role="button"{{ end }} class="{{ if $current }}active{{ end }}">
+      <a {{ if .Page.Content }}href="{{ .Page.RelPermalink }}"{{ else }}role="button"{{ end }} class="{{ if $current }}active{{ end }}">
         {{- partial "docs/title" .Page -}}
       </a>
     </label>
-  {{ else if .Page.Params.link }}
+  {{- else if .Page.Params.link -}}
     <a href="{{ .Page.Params.link }}" class="book-external-link {{ if $current }} active{{ end }}" target="_blank" rel="noopener">
       {{- partial "docs/title" .Page -}}
       <img src="{{ "svg/external-link.svg" | relURL }}" class="book-icon" alt="External Link">
     </a>
-  {{ else if .Page.Content }}
-    <a href="{{ .Page.Permalink }}" class="{{ if $current }} active{{ end }}" >
+  {{- else if .Page.Content -}}
+    <a href="{{ .Page.RelPermalink }}" class="{{ if $current }} active{{ end }}" >
       {{- partial "docs/title" .Page -}}
     </a>
-  {{ else }}
+  {{- else -}}
     <span>{{- partial "docs/title" .Page -}}</span>
-  {{ end }}
-{{ end }}
+  {{- end -}}
+{{- end -}}
