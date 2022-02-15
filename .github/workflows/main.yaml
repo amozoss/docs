@@ -6,7 +6,7 @@ on:
       - convert
       - gitbook-sync
       - gitbook-node-sync
-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
