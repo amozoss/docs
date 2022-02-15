@@ -42,7 +42,6 @@
   span:first-child {
     text-transform: uppercase;
     opacity: 0.8;
-    letter-spacing: 0.04em;
   }
 }
 
@@ -148,4 +147,21 @@ body {
     border-bottom: 2px solid var(--color-link);
     background: var(--body-background);
   }
+}
+
+
+/* Nicer fonts */
+
+@font-face {
+  font-family: 'Inter';
+  font-display: swap;
+  src: local(''),
+       url('fonts/Inter-VariableFont_slnt_wght.ttf') format('ttf');
+}
+body {
+  font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+code {
+  font-family: 'Roboto Mono', monospace;
 }
