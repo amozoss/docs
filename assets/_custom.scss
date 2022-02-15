@@ -1,4 +1,11 @@
 .markdown {
+  a img {
+    height: 1.5em;
+    width: 1.5em;
+    vertical-align: middle;
+    margin-inline-end: 0.25em;
+  }
+
   // {{< biglink >}}
   .book-big-link {
     display: block;
