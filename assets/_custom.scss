@@ -63,6 +63,25 @@
 
 /* Adjust book branding */
 
+body {
+  background-color: var(--gray-100) !important;
+}
+.book-menu-content {
+  background: unset !important;
+}
+.book-page {
+  background-color: var(--body-background) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #060606 !important;
+  }
+  .book-page {
+    background-color: #0d0d0e !important;
+  }
+}
+
 .book-brand {
   font-weight: 600;
 }
