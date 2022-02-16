@@ -252,6 +252,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.AddWeight(&page)
 	conv.AddAlias(&page)
 	conv.LiftTitle(&page)
+	conv.FixLinkedTitle(&page)
 	conv.ReplaceContentRefs(&page)
 	conv.ReplaceTags(&page)
 	conv.FixTrailingSpace(&page)
@@ -399,6 +400,11 @@ func (conv *Convert) LiftTitle(page *Page) {
 	page.FrontMatter = "title: \"" + title + "\"\n" + page.FrontMatter
 	// hugo-book does not add the title automatically
 	// page.Content = mustReplaceFirst("\n?"+rxTitle, page.Content, "")
+}
+
+// FixLinkedTitle is a workaround for hugo bug related to using links in titles.
+func (conv *Convert) FixLinkedTitle(page *Page) {
+	page.Content = replaceAll(`(?m)^(#+) ([^\[\n]+)\[([^\n]*)$`, page.Content, `$1 [$2$3`)
 }
 
 func (conv *Convert) AddAlias(page *Page) {
