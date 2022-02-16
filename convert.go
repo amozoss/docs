@@ -617,12 +617,12 @@ func (conv *Convert) DownloadAndCacheImage(page *Page, url string) (string, erro
 	if ext == "" {
 		for _, guess := range []string{".png", ".gif", ".jpg", ".svg"} {
 			if fileExists(target + guess) {
-				return cachedFile + guess, nil
+				return "/" + path.Join(conv.TargetDir, assetsDir, cachedFile) + guess, nil
 			}
 		}
 	} else {
 		if fileExists(target) {
-			return cachedFile, nil
+			return "/" + path.Join(conv.TargetDir, assetsDir, cachedFile), nil
 		}
 	}
 
