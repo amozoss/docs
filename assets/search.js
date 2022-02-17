@@ -7,11 +7,26 @@
 (function () {
   const searchDataURL = '{{ $searchData.RelPermalink }}';
   const indexConfig = Object.assign({{ $searchConfig }}, {
-    doc: {
-      id: 'id',
-      field: ['title', 'content'],
-      store: ['title', 'href', 'section', 'first']
-    }
+    id: 'id',
+    tag: 'first',
+    index: [
+      {
+        field: "title",
+        tokenize: "forward",
+        optimize: true,
+        resolution: 9
+      }, {
+        field:  "content",
+        tokenize: "strict",
+        optimize: true,
+        resolution: 5,
+        minlength: 3,
+        context: {
+            depth: 1,
+            resolution: 3
+        }
+      }],
+    store: ['title', 'href', 'section', 'first']
   });
 
   const input = document.querySelector('#book-search-input');
@@ -63,8 +78,10 @@
     fetch(searchDataURL)
       .then(pages => pages.json())
       .then(pages => {
-        window.bookSearchIndex = FlexSearch.create('balance', indexConfig);
-        window.bookSearchIndex.add(pages);
+        window.bookSearchIndex = new FlexSearch.Document(indexConfig);
+        pages.forEach(function(page){
+          window.bookSearchIndex.add(page);
+        })
       })
       .then(() => input.required = false)
       .then(search);
@@ -79,22 +96,42 @@
       return;
     }
 
-    const filter = input.dataset.filter;
-    const searchHits = window.bookSearchIndex.search(input.value, 10);
-    searchHits.forEach(function (page) {
-      if(page.first != filter) {
-        return
-      }
+    const maxSearchResults = 10;
+    var searchGroups = window.bookSearchIndex.search({
+      index: ["title", "content"],
+      query: input.value,
+      tag: input.dataset.filter,
+      limit: maxSearchResults + 2
+    });
 
+    let searchHits = [];
+    let seen = {};
+    searchGroups.forEach(function(group) {
+      group.result.forEach(function(pageid) {
+        if(seen[pageid]) return;
+        seen[pageid] = true;
+        searchHits.push(window.bookSearchIndex.store[pageid]);
+      })
+    })
+
+    const hasMore = searchHits.length > maxSearchResults;
+    searchHits = searchHits.slice(0, maxSearchResults);
+
+    searchHits.forEach(function (page) {
       const li = element('<li><a href></a><small></small></li>');
       const a = li.querySelector('a'), small = li.querySelector('small');
 
       a.href = page.href;
       a.textContent = page.title;
-      small.textContent = page.section;
+      small.textContent = page.first + page.section;
 
       results.appendChild(li);
     });
+
+    if(hasMore) {
+      const li = element('<li><center>• • •</center></li>');
+      results.appendChild(li);
+    }
   }
 
   /**
