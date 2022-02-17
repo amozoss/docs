@@ -253,6 +253,7 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.AddAlias(&page)
 	conv.LiftTitle(&page)
 	conv.FixLinkedTitle(&page)
+	conv.FixJoiners(&page)
 	conv.ReplaceContentRefs(&page)
 	conv.ReplaceTags(&page)
 	conv.FixTrailingSpace(&page)
@@ -423,6 +424,13 @@ func (conv *Convert) AddAlias(page *Page) {
 	}
 
 	page.FrontMatter = "aliases: [\"" + alias + "\"]\n" + page.FrontMatter
+}
+
+func (conv *Convert) FixJoiners(page *Page) {
+	page.Content = strings.ReplaceAll(page.Content, `\
+‌\
+`, "\n\n")
+	page.Content = strings.ReplaceAll(page.Content, "‌", "")
 }
 
 // ReplaceContentRefs implements replacing multi-line content-ref tags:
