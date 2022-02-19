@@ -677,7 +677,9 @@ func (conv *Convert) FixRegularLinks(page *Page) {
 		nonMatch, title, url := match[1], match[2], match[3]
 
 		if strings.HasPrefix(url, "http") {
-			return m
+			// replace escaped underscores
+			url = strings.ReplaceAll(url, `\_`, `_`)
+			return nonMatch + "[" + title + "](" + url + ")"
 		}
 
 		return nonMatch + "[" + title + "](" + conv.NearRef(page, url) + ")"
