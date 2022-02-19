@@ -264,6 +264,11 @@ func (conv *Convert) Convert(fullPath string) error {
 	conv.ReplaceStarryNight(&page)
 	conv.ReplaceUnderlines(&page)
 
+	// patch a filename containing a .
+	if strings.Contains(contentPath, "config.yaml.md") {
+		contentPath = strings.ReplaceAll(contentPath, "config.yaml.md", "config-yaml.md")
+	}
+
 	targetPath := path.Join(conv.ContentDir, conv.TargetDir, contentPath)
 	if strings.EqualFold(path.Base(targetPath), "README.md") {
 		targetPath = targetPath[:len(targetPath)-len("README.md")] + "_index.md"
@@ -409,6 +414,11 @@ func (conv *Convert) FixLinkedTitle(page *Page) {
 }
 
 func (conv *Convert) AddAlias(page *Page) {
+	if conv.TargetDir == "node" && page.ContentPath == "resources/faq/where-can-i-find-a-config.yaml.md" {
+		page.FrontMatter = "aliases: [\"/node/resources/faq/where-can-i-find-a-config.yaml\"]\n" + page.FrontMatter
+		return
+	}
+
 	if conv.TargetDir != "dcs" {
 		return
 	}
@@ -560,6 +570,7 @@ func (conv *Convert) FixTrailingSpace(page *Page) {
 
 // FixLinksToReadme fixes links to README.md -> _index.md.
 func (conv *Convert) FixLinksToReadme(page *Page) {
+	page.Content = replaceAll(`where-can-i-find-a-config\.yaml\.md`, page.Content, "where-can-i-find-a-config-yaml.md)")
 	page.Content = replaceAll(`README\.md\)`, page.Content, "_index.md)")
 }
 
