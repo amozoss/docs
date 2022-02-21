@@ -135,6 +135,7 @@ type Convert struct {
 	TargetDir  string
 
 	OrderByFolder map[string][]SummaryItem
+	SummaryByItem map[string]SummaryItem
 
 	Failures []error
 	Warnings []error
@@ -332,6 +333,7 @@ func (page *Page) WriteToFile(path string) error {
 
 func (conv *Convert) CreateOrder() {
 	conv.OrderByFolder = map[string][]SummaryItem{}
+	conv.SummaryByItem = map[string]SummaryItem{}
 
 	data, err := os.ReadFile(path.Join(conv.SourceDir, "SUMMARY.md"))
 	if err != nil {
@@ -349,11 +351,12 @@ func (conv *Convert) CreateOrder() {
 			dir = path.Dir(dir)
 		}
 
-		conv.OrderByFolder[dir] = append(conv.OrderByFolder[dir],
-			SummaryItem{
-				Title:       title,
-				ContentPath: contentPath,
-			})
+		sum := SummaryItem{
+			Title:       title,
+			ContentPath: contentPath,
+		}
+		conv.SummaryByItem[contentPath] = sum
+		conv.OrderByFolder[dir] = append(conv.OrderByFolder[dir], sum)
 	}
 }
 
@@ -400,6 +403,14 @@ func (conv *Convert) LiftTitle(page *Page) {
 	var title string
 	ok := match(rxTitle, page.Content, nil, &title)
 	if !ok {
+		return
+	}
+
+	summary, ok := conv.SummaryByItem[page.ContentPath]
+	if ok && summary.Title != title {
+		conv.Warnings = append(conv.Warnings, fmt.Errorf("%q title differs in summary", page.ContentPath))
+		page.FrontMatter = "title: \"" + summary.Title + "\"\n" + page.FrontMatter
+		page.Content = mustReplaceFirst("\n?"+rxTitle, page.Content, "\n# "+summary.Title+"\n")
 		return
 	}
 
