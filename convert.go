@@ -159,7 +159,7 @@ func (conv *Convert) Files() {
 			if err != nil {
 				return err
 			}
-			if filepath.Base(path) == ".git" {
+			if filepath.Base(path) == ".git" || filepath.Base(path) == ".github" {
 				if d.IsDir() {
 					return filepath.SkipDir
 				}
