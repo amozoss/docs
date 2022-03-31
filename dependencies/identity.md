@@ -115,7 +115,7 @@ Not working? [Set your file permission](http://osxdaily.com/2011/02/21/change-fi
 
 ### Authorize the identity
 
-Open your Storj Node invitation email and copy your [single-use authorization token](../before-you-begin/auth-token.md#authorization-token):
+Copy your [single-use authorization token](../before-you-begin/auth-token.md#authorization-token) from the [**Node Hosting signup page**](https://www.storj.io/host-a-node):
 
 ![](<../.gitbook/assets/Screen Shot 2019-12-13 at 4.08.37 PM.png>)
 
