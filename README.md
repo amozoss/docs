@@ -12,7 +12,7 @@ description: >-
 
 ### Have unused hard drive capacity and bandwidth?
 
-Storj pays you for your unused hard drive capacity and bandwidth in STORJ tokens\![ Sign up](https://registration.storj.io).
+Storj pays you for your unused hard drive capacity and bandwidth in STORJ tokens! Get started with [Hosting a Node](https://www.storj.io/node).
 
 ### Want to store data on the decentralized object storage network?
 
