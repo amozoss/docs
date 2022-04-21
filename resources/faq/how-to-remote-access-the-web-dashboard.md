@@ -16,7 +16,7 @@ See [Dashboard](../../setup/cli/dashboard.md#storage-node-operator-web-dashboard
 {% endtab %}
 {% endtabs %}
 
-## Install a ssh server on your PC with the storagenodestoragenode
+## Install a ssh server on your PC with the storagenode
 
 {% tabs %}
 {% tab title="Windows" %}
