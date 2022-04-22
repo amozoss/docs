@@ -1,20 +1,29 @@
+$toc-hide-at-width: 75rem;
 $container-max-width: 95rem;
 $padding-32: $padding-16 * 2;
 
-@mixin theme-dark {
-  --gray-100: #161616;
-  --gray-200: #323232;
-  --gray-500: #888888;
+:root {
+  --gray-neutral: #D8DEE3;
+  --color-link: #0149FF;
+}
 
-  --color-link: #84b2ff;
-  --color-visited-link: #b88dff;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gray-100: #161616;
+    --gray-200: #323232;
+    --gray-500: #888888;
+    --gray-neutral: #D8DEE3;
 
-  --body-background: #343a40;
-  --body-font-color: #e9ecef;
+    --color-link: #84b2ff;
+    --color-visited-link: #b88dff;
 
-  --icon-filter: brightness(0) invert(1);
+    --body-background: #343a40;
+    --body-font-color: #e9ecef;
 
-  --hint-color-info: #6bf;
-  --hint-color-warning: #fd6;
-  --hint-color-danger: #f66;
+    --icon-filter: brightness(0) invert(1);
+
+    --hint-color-info: #6bf;
+    --hint-color-warning: #fd6;
+    --hint-color-danger: #f66;
+  }
 }

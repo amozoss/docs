@@ -1,9 +1,15 @@
+@import "plugins/scrollbars";
+
 .markdown {
   a img {
     height: 1.5em;
     width: 1.5em;
     vertical-align: middle;
     margin-inline-end: 0.25em;
+  }
+
+  a:visited {
+    color: var(--color-link);
   }
 
   // {{< biglink >}}
@@ -24,6 +30,7 @@
       text-decoration: none;
     }
     &:visited {
+      color: inherit;
       text-decoration: none;
     }
 
@@ -40,8 +47,10 @@
 
 .book-section-flat {
   span:first-child {
-    text-transform: uppercase;
     opacity: 0.8;
+    border-bottom: 1px solid var(--gray-neutral);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -64,18 +73,19 @@
 
 .markdown {
   h1, h2, h3 {
-    font-weight: 600;
-    line-height: 1.25em;
+    font-weight: 800;
+    line-height: 1.33em;
+    letter-spacing: -0.02em;
   }
   h1 {
-    font-size: 2.5em
+    font-size: 2.5em;
   }
   h2 {
     font-size: 2em;
 
     padding-top: 1em;
     margin-top: 1.5em;
-    border-top: 1px solid var(--gray-500);
+    border-top: 1px solid var(--gray-neutral);
   }
   h3 {
     font-size: 1.5em;
@@ -89,13 +99,13 @@
 
 /* Adjust book branding */
 
+/* DISABLED: grayed out aside
 body, .book-menu-content {
   background-color: var(--gray-100) !important;
 }
 .book-page {
   background-color: var(--body-background) !important;
 }
-
 @media (prefers-color-scheme: dark) {
   body, .book-menu-content {
     background-color: #060606 !important;
@@ -103,6 +113,16 @@ body, .book-menu-content {
   .book-page {
     background-color: #0d0d0e !important;
   }
+}
+*/
+
+.book-page {
+  padding: 3rem 1.5rem !important;
+  padding: 3rem calc(0.5rem + 2vw) !important;
+}
+
+.book-menu-content {
+  border-right: 1px solid var(--gray-neutral);
 }
 
 .book-brand {
@@ -121,6 +141,11 @@ body, .book-menu-content {
   background-color: rgba(149, 200, 91, 0.1);
 }
 
+.book-menu a.active {
+  font-weight: 800;
+  color: var(--body-font-color);
+}
+
 .book-menu input.toggle+label::after {
   font-size: 2em;
   line-height: 0.5em;
@@ -134,7 +159,15 @@ body, .book-menu-content {
 }
 
 .book-search input {
-  border: 1px solid var(--gray-200)
+  border: 1px solid var(--gray-neutral);
+  background-color: var(--body-background);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.book-toc nav ul a {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /* make tabs look nicer */
@@ -158,5 +191,22 @@ body, .book-menu-content {
   input[type="radio"]:checked + label {
     border-bottom: 2px solid var(--color-link);
     background: var(--body-background);
+  }
+}
+
+/* Hide TOC for smaller screens */
+
+@media screen and (max-width: $toc-hide-at-width) {
+  .book-toc {
+    display: none;
+  }
+}
+
+// Extra space for big screens
+@media screen and (min-width: $container-max-width) {
+  .book-page,
+  .book-menu .book-menu-content,
+  .book-toc .book-toc-content {
+    padding: $padding-16 * 2 $padding-16;
   }
 }

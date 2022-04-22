@@ -11,4 +11,4 @@
   {{ if not $content }}{{ $content = ($.Page.GetPage .).Title }}{{ end }}
   {{ $img = "svg/toc.svg" }}
 {{ end }}
-<a {{ with $ref }} href="{{.}}" {{ end }} {{ with $target }} target="{{.}}" rel="noopener" {{ end }} class="book-big-link{{ with .Get "class" }} {{ . }}{{ end }}"><img src="{{ $img | relURL }}">{{ $content }}</a>
+<a {{ with $ref }} href="{{.}}" {{ end }} {{ with $target }} target="{{.}}" rel="noopener" {{ end }} class="book-big-link{{ with .Get "class" }} {{ . }}{{ end }}"><img class="book-icon" src="{{ $img | relURL }}">{{ $content }}</a>
